@@ -6,6 +6,7 @@ from evaluation import Evaluation
 from network import create_h0_strategy
 from setting import Setting
 from torch.utils.data import DataLoader
+from tqdm.auto import tqdm
 from trainer import FlashbackTrainer
 
 '''
@@ -37,13 +38,13 @@ print('{} {}'.format(trainer, setting.rnn_factory))
 optimizer = torch.optim.Adam(trainer.parameters(), lr=setting.learning_rate, weight_decay=setting.weight_decay)
 scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[20,40,60,80], gamma=0.2)
 
-for e in range(setting.epochs):
+for e in tqdm(range(setting.epochs), desc="epoch"):
     h = h0_strategy.on_init(setting.batch_size, setting.device)
     dataset.shuffle_users() # shuffle users before each epoch!
 
     losses = []
 
-    for i, (x, t, s, y, y_t, y_s, reset_h, active_users) in enumerate(dataloader):
+    for i, (x, t, s, y, y_t, y_s, reset_h, active_users) in enumerate(tqdm(dataloader, desc="train", leave=False)):
         # reset hidden states for newly added users
         for j, reset in enumerate(reset_h):
             if reset:
@@ -80,3 +81,15 @@ for e in range(setting.epochs):
     if (e+1) % setting.validate_epoch == 0:
         print(f'~~~ Test Set Evaluation (Epoch: {e+1}) ~~~')
         evaluation_test.evaluate()
+
+    torch.save(
+        {
+            "epoch": i,
+            "model_state_dict": trainer.model.state_dict(),
+            "optimizer_state_dict": optimizer.state_dict(),
+            "loss": loss
+        },
+        f"saved_models/checkpoint_epoch{i}.pt"
+    )
+
+torch.save(trainer.model.state_dict(), f"saved_models/pretrained.pt")

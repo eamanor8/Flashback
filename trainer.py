@@ -48,6 +48,7 @@ class FlashbackTrainer():
 
         self.model.train()
         out, h = self.model(x, t, s, y_t, y_s, h, active_users)
+        h = h.data  # fix courtesy of https://github.com/eXascaleInfolab/Flashback_code/issues/2#issuecomment-1149924973
         out = out.view(-1, self.loc_count)
         y = y.view(-1)
         l = self.cross_entropy_loss(out, y)
