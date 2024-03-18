@@ -66,10 +66,11 @@ class PoiDataset(Dataset):
             self.user_permutation.append(i)
 
 
-    def shuffle_users(self):
+    def shuffle_users(self, random_state):
+        random.setstate(random_state)
         random.shuffle(self.user_permutation)
         # reset active users:
-        self.next_user_idx = 0
+        self.next_user_idx = 0  #* this is a pointer into the self.user_permutation (reshuffled in each epoch)
         self.active_users = []
         self.active_user_seq = []
         for i in range(self.batch_size):
@@ -78,26 +79,32 @@ class PoiDataset(Dataset):
             self.active_user_seq.append(0)
 
     def __init__(self, users, times, coords, locs, sequence_length, batch_size, split, usage, loc_count, custom_seq_count):
-        self.users = users
-        self.times = times
-        self.coords = coords
-        self.locs = locs
-        self.labels = []
-        self.lbl_times = []
-        self.lbl_coords = []
-        self.sequences = []
-        self.sequences_times = []
-        self.sequences_coords = []
-        self.sequences_labels = []
-        self.sequences_lbl_times = []
-        self.sequences_lbl_coords = []
-        self.sequences_count = []
+        #* Inputs:
+        #* times: list of (one list per user), from t=0 to t=T
+        #* coords: list of (one list per user), from t=0 to t=T
+        #* locs: list of (one list per user), from t=0 to t=T
+
+        self.users = users    #* list of (one user ID per user)
+        self.times = times    #* list of (one list per user)  # These are the times of Xs, (will be set below) from t=0 to t=T-1
+        self.coords = coords  #* list of (one list per user)  # These are the coords of Xs, (will be set below) from t=0 to t=T-1
+        self.locs = locs      #* list of (one list per user)  # These are the Xs, (will be set below) from t=0 to t=T-1
+        self.labels = []      #* list of (one list per user)  # These are the Ys, from t=1 to t=T, set as label0 to labelT-1
+        self.lbl_times = []   #* list of (one list per user)  # These are the times of Ys, from t=1 to t=T, set as label0 to labelT-1
+        self.lbl_coords = []  #* list of (one list per user)  # These are the coords of Ys, from t=1 to t=T, set as label0 to labelT-1
+
+        self.sequences = []             #* list of (one list of full--length-20--sequences per user). loc IDs. MAY SKIP SOME DATA POINTS
+        self.sequences_times = []       #* list of (one list of full--length-20--sequences per user). MAY SKIP SOME DATA POINTS
+        self.sequences_coords = []      #* list of (one list of full--length-20--sequences per user). MAY SKIP SOME DATA POINTS
+        self.sequences_labels = []      #* list of (one list of full--length-20--sequences per user). loc IDs. MAY SKIP SOME DATA POINTS
+        self.sequences_lbl_times = []   #* list of (one list of full--length-20--sequences per user). MAY SKIP SOME DATA POINTS
+        self.sequences_lbl_coords = []  #* list of (one list of full--length-20--sequences per user). MAY SKIP SOME DATA POINTS
+        self.sequences_count = []       #* list of (one number of full--length-20--sequences per user)
         self.Ps = []
         self.Qs = torch.zeros(loc_count, 1)
         self.usage = usage
         self.batch_size = batch_size
-        self.loc_count = loc_count
-        self.custom_seq_count = custom_seq_count
+        self.loc_count = loc_count  #* number of locations in total across all users
+        self.custom_seq_count = custom_seq_count  #* ???; not used
 
         self.reset()
 
@@ -115,7 +122,7 @@ class PoiDataset(Dataset):
             self.times[i] = self.times[i][:-1]
             self.coords[i] = self.coords[i][:-1]
 
-        # split to training / test phase:
+        # split to training / test phase:  #* this iterates over users i
         for i, (time, coord, loc, label, lbl_time, lbl_coord) in enumerate(zip(self.times, self.coords, self.locs, self.labels, self.lbl_times, self.lbl_coords)):
             train_thr = int(len(loc) * 0.8)
             if (split == Split.TRAIN):
@@ -134,11 +141,12 @@ class PoiDataset(Dataset):
                 self.lbl_coords[i] = lbl_coord[train_thr:]
 
         # split location and labels to sequences:
-        self.max_seq_count = 0
-        self.min_seq_count = 10000000
-        self.capacity = 0
+        self.max_seq_count = 0           #* maximum number of full--length-20--sequences found for a particular user
+        self.min_seq_count = 10_000_000  #* minimum number of full--length-20--sequences found for a particular user
+        self.capacity = 0                #* total number of full--length-20--sequences across all users
+        #* this iterates over users i
         for i, (time, coord, loc, label, lbl_time, lbl_coord) in enumerate(zip(self.times, self.coords, self.locs, self.labels, self.lbl_times, self.lbl_coords)):
-            seq_count = len(loc) // sequence_length
+            seq_count = len(loc) // sequence_length  #* this is floor; how many full sequence_lengths we have in loc. The following check asserts that loc has at least sequence_length==20 elements
             assert seq_count > 0 , 'fix seq-length and min-checkins in order to have at least one test sequence in a 80/20 split!'
             seqs = []
             seq_times = []
@@ -181,6 +189,12 @@ class PoiDataset(Dataset):
     def __len__(self):
         ''' Amount of available batches to process each sequence at least once.
         '''
+        #???????????????????????????????????????????????????????????????????????????????????????????
+        # ! For what a batch means, look at __getitem__().
+        # ! There is an externally enforced constrain of "batch size must be lower than the amount of available users"
+        # ?? I think each batch will select batch_size number of users, without replacement
+        # ?? and potentially ignoring users who do not fill the final batch size (incomplete batches)
+        # ?? not considered: (len(self.users) // self.batch_size)
 
         if (self.usage == Usage.MIN_SEQ_LENGTH):
             # min times amount_of_user_batches:
@@ -196,9 +210,13 @@ class PoiDataset(Dataset):
     def __getitem__(self, idx):
         ''' Against pytorch convention, we directly build a full batch inside __getitem__.
         Use a batch_size of 1 in your pytorch data loader.
+        # ! The external dataloader object using this dataset will, in each "minibatch", call
+        # ! __getitem__() only once since batch_size=1 for the dataloader.
+        # ! Usually the dataloader will call this batch_size number of times and bunch them together
 
         A batch consists of a list of active users,
         their next location sequence with timestamps and coordinates.
+        # ! There is an externally enforced constrain of "batch size must be lower than the amount of available users"
 
         y is the target location and y_t, y_s the targets timestamp and coordiantes. Provided for
         possible use.
@@ -229,6 +247,8 @@ class PoiDataset(Dataset):
                 self.active_users[i] = i_user
                 self.active_user_seq[i] = j
                 self.next_user_idx = (self.next_user_idx + 1) % len(self.users)
+                # ! Lmao, remember There is an externally enforced constrain of "batch size must be lower than the amount of available users"
+                # ! so the while loop below will terminate for sure
                 while self.user_permutation[self.next_user_idx] in self.active_users:
                     self.next_user_idx = (self.next_user_idx + 1) % len(self.users)
                 # TODO: throw exception if wrapped around!
@@ -242,11 +262,22 @@ class PoiDataset(Dataset):
             lbl_coords.append(torch.tensor(self.sequences_lbl_coords[i_user][j]))
             self.active_user_seq[i] += 1
 
-        x = torch.stack(seqs, dim=1)
-        t = torch.stack(times, dim=1)
-        s = torch.stack(coords, dim=1)
-        y = torch.stack(lbls, dim=1)
-        y_t = torch.stack(lbl_times, dim=1)
-        y_s = torch.stack(lbl_coords, dim=1)
+        #* Each batch represents a full--length-20--sequence from one user. Each time __getitem__() is called we pull the next sequence from the user, or replace that user if they have no more sequences...
+        #* ... Think of self.active_users as like a bucket/holding area of users.
+        x = torch.stack(seqs, dim=1)          #* stack column wise, so each column is a batch (#! ?? Yes. But why? Why isn't first dimension the batch, as per convention?)
+        t = torch.stack(times, dim=1)         #* stack column wise, so each column is a batch (#! ?? Yes. But why? Why isn't first dimension the batch, as per convention?)
+        s = torch.stack(coords, dim=1)        #* stack column wise, so each column is a batch (#! ?? Yes. But why? Why isn't first dimension the batch, as per convention?)
+        y = torch.stack(lbls, dim=1)          #* stack column wise, so each column is a batch (#! ?? Yes. But why? Why isn't first dimension the batch, as per convention?)
+        y_t = torch.stack(lbl_times, dim=1)   #* stack column wise, so each column is a batch (#! ?? Yes. But why? Why isn't first dimension the batch, as per convention?)
+        y_s = torch.stack(lbl_coords, dim=1)  #* stack column wise, so each column is a batch (#! ?? Yes. But why? Why isn't first dimension the batch, as per convention?)
+
+        #* x.shape is (sequence_length==20, batch_size)
+        #* t.shape is (sequence_length==20, batch_size)
+        #* s.shape is (sequence_length==20, batch_size, 2)
+        #* y.shape is (sequence_length==20, batch_size)
+        #* y_t.shape is (sequence_length==20, batch_size)
+        #* y_s.shape is (sequence_length==20, batch_size, 2)
+        #* len(reset_h) is sequence_length==20
+        #* last return value is a new tensor of the user IDs corresponding to each batch. ~.shape is (batch_size,)
         return x, t, s, y, y_t, y_s, reset_h, torch.tensor(self.active_users)
 

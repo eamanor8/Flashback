@@ -110,7 +110,7 @@ class PoiDataloader():
             location = self.poi2id.get(location)
 
             if user == prev_user:
-                # insert in front!
+                # insert in front!  #* from start to end of list, chronological order (txt file gives descending order)
                 user_time.insert(0, time)
                 user_coord.insert(0, coord)
                 user_loc.insert(0, location)

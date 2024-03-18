@@ -1,3 +1,7 @@
+saved_models/*.pt
+
+# venv
+flashback/
 
 __pycache__/
 

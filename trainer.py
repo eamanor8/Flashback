@@ -22,9 +22,11 @@ class FlashbackTrainer():
         return self.model.parameters()
 
     def prepare(self, loc_count, user_count, hidden_size, gru_factory, device):
+        #* This is eqn2; delta_t is in units seconds
         f_t = lambda delta_t, user_len: ((torch.cos(delta_t*2*np.pi/86400) + 1) / 2)*torch.exp(-(delta_t/86400*self.lambda_t)) # hover cosine + exp decay
+        #* This is eqn3; delta_s is in units GPS coordinates
         f_s = lambda delta_s, user_len: torch.exp(-(delta_s*self.lambda_s)) # exp decay
-        self.loc_count = loc_count
+        self.loc_count = loc_count  #* number of locations in total across all users
         self.cross_entropy_loss = nn.CrossEntropyLoss()
         self.model = Flashback(loc_count, user_count, hidden_size, f_t, f_s, gru_factory).to(device)
 

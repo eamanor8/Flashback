@@ -37,7 +37,7 @@ class Setting:
         # data management
         self.dataset_file = './data/{}'.format(args.dataset)
         self.max_users = 0 # 0 = use all available users
-        self.sequence_length = 20
+        self.sequence_length = 20  #* is this k=20? Yes.
         self.batch_size = args.batch_size
         self.min_checkins = 101
 

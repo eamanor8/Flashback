@@ -53,6 +53,7 @@ class Flashback(nn.Module):
     of user embeddings to the output of a generic RNN unit (RNN, GRU, LSTM).
     '''
 
+    #* input_size is loc_count, the number of locations in total across all users
     def __init__(self, input_size, user_count, hidden_size, f_t, f_s, rnn_factory):
         super().__init__()
         self.input_size = input_size
@@ -64,7 +65,7 @@ class Flashback(nn.Module):
         self.encoder = nn.Embedding(input_size, hidden_size) # location embedding
         self.user_encoder = nn.Embedding(user_count, hidden_size) # user embedding
         self.rnn = rnn_factory.create(hidden_size)
-        self.fc = nn.Linear(2*hidden_size, input_size) # create outputs in lenght of locations
+        self.fc = nn.Linear(2*hidden_size, input_size) # create outputs in lenght of locations  #* seq2seq  (many-to-many) RNN
 
     def forward(self, x, t, s, y_t, y_s, h, active_user):
         seq_len, user_len = x.size()
