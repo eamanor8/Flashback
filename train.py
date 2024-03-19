@@ -119,7 +119,7 @@ Change --gpu -1 to --gpu 0 if using GPU.
 python3 preprocessmcmg.py
 
 python3 train.py \
---gpu -1 --hidden-dim 10 --weight_decay 0.0 --lr 0.01 --epochs 5 --rnn rnn \
+--gpu -1 --hidden-dim 10 --weight_decay 0.0 --lr 0.01 --epochs 100 --rnn rnn \
 --dataset CAL_checkin.txt \
 --validate-epoch 5 --report-user 1 \
 --batch-size 16 --lambda_t 0.1 --lambda_s 100
