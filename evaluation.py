@@ -1,3 +1,4 @@
+# OK
 
 import numpy as np
 import torch
@@ -45,6 +46,8 @@ class Evaluation:
             u_average_precision = np.zeros(self.user_count)
             reset_count = torch.zeros(self.user_count)
 
+            #* for shapes of x, t, s, y, y_t, y_s, reset_h, active_users, see bottom of dataset.py
+            #* note that until we call squeeze, there is a prepended batch dimension
             for i, (x, t, s, y, y_t, y_s, reset_h, active_users) in enumerate(self.dataloader):
                 active_users = active_users.squeeze()
                 for j, reset in enumerate(reset_h):
@@ -69,40 +72,43 @@ class Evaluation:
 
                 # evaluate:
                 out, h = self.trainer.evaluate(x, t, s, y_t, y_s, h, active_users)
+                #* out shape is (batch_size, sequence_length==20, loc_count==total number of locations)
+                #* h shape is (1, batch_size, hidden_dim==10)
 
                 for j in range(self.setting.batch_size):
                     # o contains a per user list of votes for all locations for each sequence entry
-                    o = out[j]
+                    o = out[j]  #* shape is (sequence_length==20, loc_count==total number of locations)
 
                     # partition elements
-                    o_n = o.cpu().detach().numpy()
-                    ind = np.argpartition(o_n, -10, axis=1)[:, -10:] # top 10 elements
+                    o_n = o.cpu().detach().numpy()  #* shape is (sequence_length==20, loc_count==total number of locations)
+                    ind = np.argpartition(o_n, -10, axis=1)[:, -10:] # top 10 elements  #* shape is (sequence_length==20, top 10 location IDs)
 
-                    y_j = y[:, j]
+                    y_j = y[:, j]  #* shape is (sequence_length==20,);  y shape is (sequence_length==20, batch_size)
 
                     for k in range(len(y_j)):
                         if (reset_count[active_users[j]] > 1):
                             continue # skip already evaluated users.
 
                         # resort indices for k:
-                        ind_k = ind[k]
+                        ind_k = ind[k]  #* shape is (top 10 location IDs,)
                         r = ind_k[np.argsort(-o_n[k, ind_k], axis=0)] # sort top 10 elements descending
 
-                        r = torch.tensor(r)
-                        t = y_j[k]
+                        r = torch.tensor(r)  #* shape is (top 10 location IDs in descending order,)
+                        t = y_j[k]  #* shape is (1,), the correct answer
 
-                        # compute MAP:
-                        r_kj = o_n[k, :]
-                        t_val = r_kj[t]
-                        upper = np.where(r_kj > t_val)[0]
+                        # compute MAP:  #* mean average precision
+                        r_kj = o_n[k, :]  #* shape is (loc_count==total number of locations,)
+                        t_val = r_kj[t]  #* shape is (1,), the predicted "probability" (? no softmax but ok) for the correct answer
+                        upper = np.where(r_kj > t_val)[0]  #* [0] to obtain from a 1-tuple
                         precision = 1. / (1+len(upper))
 
                         # store
+                        #! Isn't this precision, not recall?
                         u_iter_cnt[active_users[j]] += 1
                         u_recall1[active_users[j]] += t in r[:1]
                         u_recall5[active_users[j]] += t in r[:5]
                         u_recall10[active_users[j]] += t in r[:10]
-                        u_average_precision[active_users[j]] += precision
+                        u_average_precision[active_users[j]] += precision  #! This precision measure is wack
 
             formatter = "{0:.8f}"
             for j in range(self.user_count):

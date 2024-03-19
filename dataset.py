@@ -1,3 +1,5 @@
+# OK
+
 import random
 from enum import Enum
 
@@ -66,8 +68,7 @@ class PoiDataset(Dataset):
             self.user_permutation.append(i)
 
 
-    def shuffle_users(self, random_state):
-        random.setstate(random_state)
+    def shuffle_users(self):
         random.shuffle(self.user_permutation)
         # reset active users:
         self.next_user_idx = 0  #* this is a pointer into the self.user_permutation (reshuffled in each epoch)
@@ -192,9 +193,9 @@ class PoiDataset(Dataset):
         #???????????????????????????????????????????????????????????????????????????????????????????
         # ! For what a batch means, look at __getitem__().
         # ! There is an externally enforced constrain of "batch size must be lower than the amount of available users"
-        # ?? I think each batch will select batch_size number of users, without replacement
-        # ?? and potentially ignoring users who do not fill the final batch size (incomplete batches)
-        # ?? not considered: (len(self.users) // self.batch_size)
+        # I think each batch will select batch_size number of users
+        # and potentially ignoring users who do not fill the final batch size (incomplete batches)
+        # not considered: (len(self.users) // self.batch_size)
 
         if (self.usage == Usage.MIN_SEQ_LENGTH):
             # min times amount_of_user_batches:
@@ -213,6 +214,9 @@ class PoiDataset(Dataset):
         # ! The external dataloader object using this dataset will, in each "minibatch", call
         # ! __getitem__() only once since batch_size=1 for the dataloader.
         # ! Usually the dataloader will call this batch_size number of times and bunch them together
+        # ! and the above happens for each iteration of the dataloader.
+        # ! When iterating over the dataloader, a total of dataset __len__() iterations are genreated.
+        # ! Read more at https://stackoverflow.com/a/48611864
 
         A batch consists of a list of active users,
         their next location sequence with timestamps and coordinates.
@@ -262,14 +266,15 @@ class PoiDataset(Dataset):
             lbl_coords.append(torch.tensor(self.sequences_lbl_coords[i_user][j]))
             self.active_user_seq[i] += 1
 
-        #* Each batch represents a full--length-20--sequence from one user. Each time __getitem__() is called we pull the next sequence from the user, or replace that user if they have no more sequences...
+        #* Each batch represents a full--length-20--sequence from one user (batch_size different users).
+        #* Each time __getitem__() is called we pull the next sequence from the user, or replace that user if they have no more sequences...
         #* ... Think of self.active_users as like a bucket/holding area of users.
-        x = torch.stack(seqs, dim=1)          #* stack column wise, so each column is a batch (#! ?? Yes. But why? Why isn't first dimension the batch, as per convention?)
-        t = torch.stack(times, dim=1)         #* stack column wise, so each column is a batch (#! ?? Yes. But why? Why isn't first dimension the batch, as per convention?)
-        s = torch.stack(coords, dim=1)        #* stack column wise, so each column is a batch (#! ?? Yes. But why? Why isn't first dimension the batch, as per convention?)
-        y = torch.stack(lbls, dim=1)          #* stack column wise, so each column is a batch (#! ?? Yes. But why? Why isn't first dimension the batch, as per convention?)
-        y_t = torch.stack(lbl_times, dim=1)   #* stack column wise, so each column is a batch (#! ?? Yes. But why? Why isn't first dimension the batch, as per convention?)
-        y_s = torch.stack(lbl_coords, dim=1)  #* stack column wise, so each column is a batch (#! ?? Yes. But why? Why isn't first dimension the batch, as per convention?)
+        x = torch.stack(seqs, dim=1)          #* stack column wise, so each column is a batch (following RNN convention)
+        t = torch.stack(times, dim=1)         #* stack column wise, so each column is a batch (following RNN convention)
+        s = torch.stack(coords, dim=1)        #* stack column wise, so each column is a batch (following RNN convention)
+        y = torch.stack(lbls, dim=1)          #* stack column wise, so each column is a batch (following RNN convention)
+        y_t = torch.stack(lbl_times, dim=1)   #* stack column wise, so each column is a batch (following RNN convention)
+        y_s = torch.stack(lbl_coords, dim=1)  #* stack column wise, so each column is a batch (following RNN convention)
 
         #* x.shape is (sequence_length==20, batch_size)
         #* t.shape is (sequence_length==20, batch_size)
@@ -277,7 +282,7 @@ class PoiDataset(Dataset):
         #* y.shape is (sequence_length==20, batch_size)
         #* y_t.shape is (sequence_length==20, batch_size)
         #* y_s.shape is (sequence_length==20, batch_size, 2)
-        #* len(reset_h) is sequence_length==20
+        #* len(reset_h) is batch_size
         #* last return value is a new tensor of the user IDs corresponding to each batch. ~.shape is (batch_size,)
         return x, t, s, y, y_t, y_s, reset_h, torch.tensor(self.active_users)
 

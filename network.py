@@ -1,3 +1,5 @@
+# OK
+
 from enum import Enum
 
 import numpy as np
@@ -64,38 +66,51 @@ class Flashback(nn.Module):
 
         self.encoder = nn.Embedding(input_size, hidden_size) # location embedding
         self.user_encoder = nn.Embedding(user_count, hidden_size) # user embedding
-        self.rnn = rnn_factory.create(hidden_size)
-        self.fc = nn.Linear(2*hidden_size, input_size) # create outputs in lenght of locations  #* seq2seq  (many-to-many) RNN
+        self.rnn = rnn_factory.create(hidden_size)  #* seq2seq  (many-to-many RNN)
+        self.fc = nn.Linear(2*hidden_size, input_size) # create outputs in lenght of locations  #* many-to-one RNN
+                                                                                                #! but actually by the way forward() works, it is many-to-many (see shape of the returned y_linear object: one prediction is made for each leading substring of sequence_length==20)
+        #* self.fc turns a (2*hidden_size==20) vector into a (loc_count==total number of locations) vector (can be large!)
+        #TODO NB: Can never predict never-before-seen locations in the train dataset.
 
     def forward(self, x, t, s, y_t, y_s, h, active_user):
-        seq_len, user_len = x.size()
-        x_emb = self.encoder(x)
-        out, h = self.rnn(x_emb, h)
+        #* for shapes of x, t, s, y, y_t, y_s, active_users, see bottom of dataset.py
+        #* note that squeeze has been called, so there isn't a prepended batch dimension. The
+        #* dimensions stated in the bottom of dataset.py apply here exactly.
+        #*! NB: if this is called from trainer.evaluate(), then active_user has NOT been squeezed.
+        #*!     if this is called from trainer.loss(), then active_user has been squeezed.
+        #*!     It doesn't matter.
 
-        # comopute weights per user
+        seq_len, user_len = x.size()  #* user_len is the batch_size so yes user_len (see near bottom of dataset.py)
+                                      #* x is of shape (sequence_length==20, batch_size). Loc IDs.
+        x_emb = self.encoder(x)       #* shape is (sequence_length==20, batch_size, hidden_dim==10)
+        out, h = self.rnn(x_emb, h)   #* h is of shape (1, batch_size, hidden_dim==10)
+                                      #* out is of shape (sequence_length==20, batch_size, hidden_dim==10)  [the upwards arrows out of an RNN unrolled-view]
+                                      #* h is of shape (1, batch_size, hidden_dim==10)
+
+        # comopute weights per user  #* these are the spatio-temporal weights MULTIPLIED BY the hidden states, hence the self.hidden_size dimension
         out_w = torch.zeros(seq_len, user_len, self.hidden_size, device=x.device)
         for i in range(seq_len):
-            sum_w = torch.zeros(user_len, 1, device=x.device)
+            sum_w = torch.zeros(user_len, 1, device=x.device)  #* shape is (batch_size, 1)
             for j in range(i+1):
-                dist_t = t[i] - t[j]
-                dist_s = torch.norm(s[i] - s[j], dim=-1)
-                a_j = self.f_t(dist_t, user_len)
-                b_j = self.f_s(dist_s, user_len)
-                a_j = a_j.unsqueeze(1)
-                b_j = b_j.unsqueeze(1)
-                w_j = a_j*b_j + 1e-10 # small epsilon to avoid 0 division
+                dist_t = t[i] - t[j]  #* shape is (batch_size,)
+                dist_s = torch.norm(s[i] - s[j], dim=-1)  #* shape is (batch_size,)
+                a_j = self.f_t(dist_t, user_len)  #* second arg not used; shape is (batch_size,)
+                b_j = self.f_s(dist_s, user_len)  #* second arg not used; shape is (batch_size,)
+                a_j = a_j.unsqueeze(1)  #* shape is (batch_size, 1)
+                b_j = b_j.unsqueeze(1)  #* shape is (batch_size, 1)
+                w_j = a_j*b_j + 1e-10 # small epsilon to avoid 0 division  #* shape is (batch_size, 1)
                 sum_w += w_j
-                out_w[i] += w_j*out[j]
+                out_w[i] += w_j*out[j]  #* out[j] shape is (batch_size, hidden_dim==10)
             # normliaze according to weights
-            out_w[i] /= sum_w
+            out_w[i] /= sum_w  #* sum across ALL O(n^2) weights associated with deltas (time and space)
 
         # add user embedding:
-        p_u = self.user_encoder(active_user)
-        p_u = p_u.view(user_len, self.hidden_size)
+        p_u = self.user_encoder(active_user)  #* shape is (1, batch_size, hidden_size==10); active_user shape is (1, batch_size)
+        p_u = p_u.view(user_len, self.hidden_size)  #* shape is (batch_size, hidden_size==10)
         out_pu = torch.zeros(seq_len, user_len, 2*self.hidden_size, device=x.device)
         for i in range(seq_len):
             out_pu[i] = torch.cat([out_w[i], p_u], dim=1)
-        y_linear = self.fc(out_pu)
+        y_linear = self.fc(out_pu)  #* (sequence_length==20, batch_size, 2*hidden_size==20) |-> (sequence_length==20, batch_size, loc_count==total number of locations)
         return y_linear, h
 
 '''
