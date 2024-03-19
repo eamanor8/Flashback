@@ -61,6 +61,7 @@ class PoiDataloader():
         self.read_users(file)
         # collect checkins for all collected users:
         self.read_pois(file)
+        # print(self.user2id)  #* DEBUG SET A
 
     def read_users(self, file):
         f = open(file, 'r')

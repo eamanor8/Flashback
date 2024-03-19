@@ -126,6 +126,7 @@ class PoiDataset(Dataset):
         # split to training / test phase:  #* this iterates over users i
         for i, (time, coord, loc, label, lbl_time, lbl_coord) in enumerate(zip(self.times, self.coords, self.locs, self.labels, self.lbl_times, self.lbl_coords)):
             train_thr = int(len(loc) * 0.8)
+            # print(f"i={i} |-> train_thr={train_thr}")  #* DEBUG SET A
             if (split == Split.TRAIN):
                 self.times[i] = time[:train_thr]
                 self.coords[i] = coord[:train_thr]
@@ -148,7 +149,7 @@ class PoiDataset(Dataset):
         #* this iterates over users i
         for i, (time, coord, loc, label, lbl_time, lbl_coord) in enumerate(zip(self.times, self.coords, self.locs, self.labels, self.lbl_times, self.lbl_coords)):
             seq_count = len(loc) // sequence_length  #* this is floor; how many full sequence_lengths we have in loc. The following check asserts that loc has at least sequence_length==20 elements
-            assert seq_count > 0 , 'fix seq-length and min-checkins in order to have at least one test sequence in a 80/20 split!'
+            assert seq_count > 0 , f"fix seq-length and min-checkins in order to have at least one test sequence in a 80/20 split!; len(loc)={len(loc)}, sequence_length={sequence_length}, len(loc)//sequence_length={len(loc) // sequence_length}; user ID after mapping={i}"  #* DEBUG SET A
             seqs = []
             seq_times = []
             seq_coords = []

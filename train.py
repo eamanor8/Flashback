@@ -111,3 +111,24 @@ torch.save(
     },
     f"saved_models/pretrained.pt"
 )
+
+"""
+Change --gpu -1 to --gpu 0 if using GPU.
+
+
+python3 preprocessmcmg.py
+
+python3 train.py \
+--gpu -1 --hidden-dim 10 --weight_decay 0.0 --lr 0.01 --epochs 5 --rnn rnn \
+--dataset CAL_checkin.txt \
+--validate-epoch 5 --report-user 1 \
+--batch-size 16 --lambda_t 0.1 --lambda_s 100
+"""
+# The following are original Flashback defaults which we don't use
+"""
+# --dataset checkins-gowalla.txt \
+# --batch-size 200 --lambda_t 0.1 --lambda_s 1000  # defaults for gowalla dataset
+
+# --dataset checkins-4sq.txt \
+# --batch-size 1024 --lambda_t 0.1 --lambda_s 100  # defaults for foursquare dataset
+"""

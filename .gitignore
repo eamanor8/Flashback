@@ -6,4 +6,5 @@ flashback/
 __pycache__/
 
 # ommit datasets
-data/*.txt
+data
+!data/README.md
