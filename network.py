@@ -80,6 +80,8 @@ class Flashback(nn.Module):
         #*!     if this is called from trainer.loss(), then active_user has been squeezed.
         #*!     It doesn't matter.
 
+        # print(f"active_user={active_user}; x={x}")
+
         seq_len, user_len = x.size()  #* user_len is the batch_size so yes user_len (see near bottom of dataset.py)
                                       #* x is of shape (sequence_length==20, batch_size). Loc IDs.
         x_emb = self.encoder(x)       #* shape is (sequence_length==20, batch_size, hidden_dim==10)

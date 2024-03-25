@@ -1,5 +1,6 @@
-# OK
+# OK, TRANSFERRED
 
+import collections
 import os.path
 import sys
 from datetime import datetime
@@ -17,21 +18,24 @@ class PoiDataloader():
     Ids for users and locations are recreated and continous from 0.
     '''
 
-    def __init__(self, max_users=0, min_checkins=0):
-        ''' max_users limits the amount of users to load.
+    def __init__(self, loc_count, *, max_users: int = 0, min_checkins: int = 0) -> None:
+        """max_users limits the amount of users to load.
         min_checkins discards users with less than this amount of checkins.
-        '''
+        """
+        self.max_users: int = max_users
+        self.min_checkins: int = min_checkins
 
-        self.max_users = max_users
-        self.min_checkins = min_checkins
+        # * maps from client_x.txt's UserId to an internal venue ID used by PoiDataloader and PoiDataset.
+        self.user2id: dict[int, int] = {}
+        # * maps from client_x.txt's VenueId to an internal venue ID used by PoiDataloader and PoiDataset.
+        # ! This definition prevents remapping across different clients in a federated setting.
+        # ! The preprocessing already made the locations start indexing from 0
+        self.poi2id: dict[int, int] = {i: i for i in range(loc_count)}
 
-        self.user2id = {}
-        self.poi2id = {}
-
-        self.users = []
-        self.times = []
-        self.coords = []
-        self.locs = []
+        self.users: list[int] = []
+        self.times: list[list[float]] = []
+        self.coords: list[list[tuple[float, float]]] = []
+        self.locs: list[list[int]] = []
 
     def create_dataset(self, sequence_length, batch_size, split, usage=Usage.MAX_SEQ_LENGTH, custom_seq_count=1):
         return PoiDataset(self.users.copy(),\
@@ -63,6 +67,12 @@ class PoiDataloader():
         self.read_pois(file)
         # print(self.user2id)  #* DEBUG SET A
 
+        print(self.user2id)
+        # print(self.poi2id)
+        assert all(
+            [k == v for k, v in self.poi2id.items()]
+        ), f"Mapping invalid, results cannot be combined at the federation server: {self.poi2id}"
+
     def read_users(self, file):
         f = open(file, 'r')
         lines = f.readlines()
@@ -83,6 +93,12 @@ class PoiDataloader():
                 visit_cnt = 1
                 if self.max_users > 0 and len(self.user2id) >= self.max_users:
                     break # restrict to max users
+        #! Original implementation forgot to consider the last user...
+        if visit_cnt >= self.min_checkins:
+            self.user2id[prev_user] = len(self.user2id)
+        else:
+            raise Exception("Pre-processing step did not eliminate user with insufficient checkins. Please run `poetry run python -m project.task.flashback.dataset_preparation` then retry.")
+        #    print('discard user {}: to few checkins ({})'.format(prev_user, visit_cnt))
 
     def read_pois(self, file):
         f = open(file, 'r')
@@ -109,6 +125,7 @@ class PoiDataloader():
 
             location = int(tokens[4]) # location nr
             if self.poi2id.get(location) is None: # get-or-set locations
+                raise Exception(f"Should not occur as poi2id should have been set during __init__(): location={location} not a key in self.poi2id={self.poi2id}")
                 self.poi2id[location] = len(self.poi2id)
             location = self.poi2id.get(location)
 

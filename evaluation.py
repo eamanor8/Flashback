@@ -49,7 +49,7 @@ class Evaluation:
             #* for shapes of x, t, s, y, y_t, y_s, reset_h, active_users, see bottom of dataset.py
             #* note that until we call squeeze, there is a prepended batch dimension
             for i, (x, t, s, y, y_t, y_s, reset_h, active_users) in enumerate(self.dataloader):
-                active_users = active_users.squeeze()
+                active_users = active_users.squeeze(dim=0)
                 for j, reset in enumerate(reset_h):
                     if reset:
                         if self.setting.is_lstm:
@@ -61,12 +61,12 @@ class Evaluation:
                         reset_count[active_users[j]] += 1
 
                 # squeeze for reasons of "loader-batch-size-is-1"
-                x = x.squeeze().to(self.setting.device)
-                t = t.squeeze().to(self.setting.device)
-                s = s.squeeze().to(self.setting.device)
-                y = y.squeeze()
-                y_t = y_t.squeeze().to(self.setting.device)
-                y_s = y_s.squeeze().to(self.setting.device)
+                x = x.squeeze(dim=0).to(self.setting.device)
+                t = t.squeeze(dim=0).to(self.setting.device)
+                s = s.squeeze(dim=0).to(self.setting.device)
+                y = y.squeeze(dim=0)
+                y_t = y_t.squeeze(dim=0).to(self.setting.device)
+                y_s = y_s.squeeze(dim=0).to(self.setting.device)
 
                 active_users = active_users.to(self.setting.device)
 

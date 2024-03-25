@@ -3,6 +3,9 @@ from pathlib import Path
 
 import pandas as pd
 
+# WARNING SUPER OUTDATED.
+
+
 MIN_CHECKINS = 101  # from setting.py; reject users with fewer than this number of checkins
 # With 101 checkins, the first 80 will go to train (which results in length-79 X-y pairs due to the off-by-one alignment)
 #                    and the latter 21 will go to test (which results in length-20 X-y pairs, length-20 is the minimum

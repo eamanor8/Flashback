@@ -1,4 +1,4 @@
-# OK
+# OK, TRANSFERRED
 
 import random
 from enum import Enum
@@ -150,6 +150,7 @@ class PoiDataset(Dataset):
         for i, (time, coord, loc, label, lbl_time, lbl_coord) in enumerate(zip(self.times, self.coords, self.locs, self.labels, self.lbl_times, self.lbl_coords)):
             seq_count = len(loc) // sequence_length  #* this is floor; how many full sequence_lengths we have in loc. The following check asserts that loc has at least sequence_length==20 elements
             assert seq_count > 0 , f"fix seq-length and min-checkins in order to have at least one test sequence in a 80/20 split!; len(loc)={len(loc)}, sequence_length={sequence_length}, len(loc)//sequence_length={len(loc) // sequence_length}; user ID after mapping={i}"  #* DEBUG SET A
+            print(f"len(loc)={len(loc)}, seq_count={seq_count}")
             seqs = []
             seq_times = []
             seq_coords = []
@@ -204,7 +205,9 @@ class PoiDataset(Dataset):
         if (self.usage == Usage.MAX_SEQ_LENGTH):
             # estimated capacity:
             estimated = self.capacity // self.batch_size
-            return max(self.max_seq_count, estimated)
+            result = max(self.max_seq_count, estimated)
+            print(f"self.max_seq_count={self.max_seq_count}, self.batch_size={self.batch_size}, result={result}")
+            return result
         if (self.usage == Usage.CUSTOM):
             return self.custom_seq_count * (len(self.users) // self.batch_size)
         raise ValueError()
@@ -245,6 +248,7 @@ class PoiDataset(Dataset):
                 max_j = self.min_seq_count
             if (self.usage == Usage.CUSTOM):
                 max_j = min(max_j, self.custom_seq_count) # use either the users maxima count or limit by custom count
+            print(f"i={i}, j={j}, max_j={max_j}")
             if (j >= max_j):
                 # repalce this user in current sequence:
                 i_user = self.user_permutation[self.next_user_idx]
@@ -255,6 +259,7 @@ class PoiDataset(Dataset):
                 # ! Lmao, remember There is an externally enforced constrain of "batch size must be lower than the amount of available users"
                 # ! so the while loop below will terminate for sure
                 while self.user_permutation[self.next_user_idx] in self.active_users:
+                    raise NotImplementedError
                     self.next_user_idx = (self.next_user_idx + 1) % len(self.users)
                 # TODO: throw exception if wrapped around!
             # use this user:

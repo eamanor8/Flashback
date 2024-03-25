@@ -31,6 +31,8 @@ class FlashbackTrainer():
         self.loc_count = loc_count  #* number of locations in total across all users
         self.cross_entropy_loss = nn.CrossEntropyLoss()
         self.model = Flashback(loc_count, user_count, hidden_size, f_t, f_s, gru_factory).to(device)
+        import torchinfo
+        print(torchinfo.summary(self.model))
 
     def evaluate(self, x, t, s, y_t, y_s, h, active_users):
         ''' takes a batch (users x location sequence)

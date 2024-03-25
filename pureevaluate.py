@@ -30,17 +30,17 @@ np.random.seed(SEED)
 torch_generator = torch.manual_seed(SEED)
 
 ### load dataset ###
-poi_loader = PoiDataloader(472, max_users=setting.max_users, min_checkins=setting.min_checkins)
+poi_loader = PoiDataloader(setting.max_users, setting.min_checkins)
 poi_loader.read(setting.dataset_file)
-dataset = poi_loader.create_dataset(setting.sequence_length, setting.batch_size, Split.TRAIN)
-dataloader = DataLoader(dataset, batch_size=1, shuffle=False)
+# dataset = poi_loader.create_dataset(setting.sequence_length, setting.batch_size, Split.TRAIN)
+# dataloader = DataLoader(dataset, batch_size=1, shuffle=False)
 dataset_test = poi_loader.create_dataset(setting.sequence_length, setting.batch_size, Split.TEST)
 dataloader_test = DataLoader(dataset_test, batch_size=1, shuffle=False)
-assert setting.batch_size <= poi_loader.user_count(), 'batch size must be lower than the amount of available users'
-
+assert setting.batch_size < poi_loader.user_count(), 'batch size must be lower than the amount of available users'
 
 ### create flashback trainer ###
 trainer = FlashbackTrainer(setting.lambda_t, setting.lambda_s)
+#TODO CONT HERE IF APPLICABLE
 h0_strategy: FixNoiseStrategy = create_h0_strategy(setting.hidden_dim, setting.is_lstm)  #* initial hidden state to RNN
 trainer.prepare(poi_loader.locations(), poi_loader.user_count(), setting.hidden_dim, setting.rnn_factory, setting.device)
 evaluation_test = Evaluation(dataset_test, dataloader_test, poi_loader.user_count(), h0_strategy, trainer, setting)
@@ -70,12 +70,12 @@ for e in tqdm(range(setting.epochs), desc="epoch", total=setting.epochs):
                     h[0, j] = h0_strategy.on_reset(active_users[0][j])
 
         #* Need to squeeze: dataloader prepends the batch dimension, which is 1
-        x = x.squeeze(dim=0).to(setting.device)
-        t = t.squeeze(dim=0).to(setting.device)
-        s = s.squeeze(dim=0).to(setting.device)
-        y = y.squeeze(dim=0).to(setting.device)
-        y_t = y_t.squeeze(dim=0).to(setting.device)
-        y_s = y_s.squeeze(dim=0).to(setting.device)
+        x = x.squeeze().to(setting.device)
+        t = t.squeeze().to(setting.device)
+        s = s.squeeze().to(setting.device)
+        y = y.squeeze().to(setting.device)
+        y_t = y_t.squeeze().to(setting.device)
+        y_s = y_s.squeeze().to(setting.device)
         active_users = active_users.to(setting.device)
 
         optimizer.zero_grad()
