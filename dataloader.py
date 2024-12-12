@@ -30,7 +30,7 @@ class PoiDataloader():
         # * maps from client_x.txt's VenueId to an internal venue ID used by PoiDataloader and PoiDataset.
         # ! This definition prevents remapping across different clients in a federated setting.
         # ! The preprocessing already made the locations start indexing from 0
-        self.poi2id: dict[int, int] = {i: i for i in range(loc_count)}
+        self.poi2id: dict[int, int] = {}
 
         self.users: list[int] = []
         self.times: list[list[float]] = []
@@ -65,15 +65,16 @@ class PoiDataloader():
         self.read_users(file)
         # collect checkins for all collected users:
         self.read_pois(file)
-        # print(self.user2id)  #* DEBUG SET A
-
-        print(self.user2id)
-        # print(self.poi2id)
-        assert all(
-            [k == v for k, v in self.poi2id.items()]
-        ), f"Mapping invalid, results cannot be combined at the federation server: {self.poi2id}"
 
     def read_users(self, file):
+        '''
+        Collect all users with min checkins from the dataset.
+
+        A user is represented by its ID and the number of checkins (visits) it has.
+        The method reads the dataset line by line and keeps track of the current user and the number of checkins.
+        If the number of checkins of the current user is greater than or equal to min_checkins, the user is added to the user2id dictionary.
+        If the maximum number of users is reached, the loop is stopped.
+        '''
         f = open(file, 'r')
         lines = f.readlines()
 
@@ -93,12 +94,7 @@ class PoiDataloader():
                 visit_cnt = 1
                 if self.max_users > 0 and len(self.user2id) >= self.max_users:
                     break # restrict to max users
-        #! Original implementation forgot to consider the last user...
-        if visit_cnt >= self.min_checkins:
-            self.user2id[prev_user] = len(self.user2id)
-        else:
-            raise Exception("Pre-processing step did not eliminate user with insufficient checkins. Please run `poetry run python -m project.task.flashback.dataset_preparation` then retry.")
-        #    print('discard user {}: to few checkins ({})'.format(prev_user, visit_cnt))
+        
 
     def read_pois(self, file):
         f = open(file, 'r')
@@ -123,9 +119,9 @@ class PoiDataloader():
             long = float(tokens[3])
             coord = (lat, long)
 
-            location = int(tokens[4]) # location nr
-            if self.poi2id.get(location) is None: # get-or-set locations
-                raise Exception(f"Should not occur as poi2id should have been set during __init__(): location={location} not a key in self.poi2id={self.poi2id}")
+            location = int(tokens[4]) # location id
+            # Dynamically add missing locations to poi2id
+            if location not in self.poi2id:
                 self.poi2id[location] = len(self.poi2id)
             location = self.poi2id.get(location)
 

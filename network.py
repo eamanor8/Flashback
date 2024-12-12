@@ -1,4 +1,4 @@
-# OK
+# OK 
 
 from enum import Enum
 
@@ -43,6 +43,15 @@ class RnnFactory():
         return self.rnn_type in [Rnn.LSTM]
 
     def create(self, hidden_size):
+        """
+        Creates an RNN unit based on the specified type with the given hidden size.
+
+        Args:
+            hidden_size (int): The number of features in the hidden state of the RNN.
+
+        Returns:
+            nn.Module: An RNN, GRU, or LSTM module initialized with the specified hidden size.
+        """
         if self.rnn_type == Rnn.RNN:
             return nn.RNN(hidden_size, hidden_size)
         if self.rnn_type == Rnn.GRU:
@@ -58,7 +67,7 @@ class Flashback(nn.Module):
     #* input_size is loc_count, the number of locations in total across all users
     def __init__(self, input_size, user_count, hidden_size, f_t, f_s, rnn_factory):
         super().__init__()
-        self.input_size = input_size
+        self.input_size = input_size # location count
         self.user_count = user_count
         self.hidden_size = hidden_size
         self.f_t = f_t # function for computing temporal weight
@@ -81,6 +90,9 @@ class Flashback(nn.Module):
         #*!     It doesn't matter.
 
         # print(f"active_user={active_user}; x={x}")
+
+        # Ensure active_user is on the same device as the model
+        # active_user = active_user.to(x.device)  # Move to the same device as input `x`
 
         seq_len, user_len = x.size()  #* user_len is the batch_size so yes user_len (see near bottom of dataset.py)
                                       #* x is of shape (sequence_length==20, batch_size). Loc IDs.
@@ -176,3 +188,4 @@ class LstmStrategy(H0Strategy):
         h = self.h_strategy.on_reset(user)
         c = self.c_strategy.on_reset(user)
         return (h,c)
+

@@ -15,10 +15,6 @@ from trainer import FlashbackTrainer
 
 SEED = 42
 
-'''
-Main train script to invoke from commandline.
-'''
-
 ### parse settings ###
 setting = Setting()
 setting.parse()
@@ -30,7 +26,7 @@ np.random.seed(SEED)
 torch_generator = torch.manual_seed(SEED)
 
 ### load dataset ###
-poi_loader = PoiDataloader(472, max_users=setting.max_users, min_checkins=setting.min_checkins)
+poi_loader = PoiDataloader(43326, max_users=setting.max_users, min_checkins=setting.min_checkins) # loc_count: 4sq: 69005 gowalla: 121851 # 116831
 poi_loader.read(setting.dataset_file)
 dataset = poi_loader.create_dataset(setting.sequence_length, setting.batch_size, Split.TRAIN)
 dataloader = DataLoader(dataset, batch_size=1, shuffle=False)
@@ -83,26 +79,25 @@ for e in tqdm(range(setting.epochs), desc="epoch", total=setting.epochs):
         loss.backward(retain_graph=True)
         losses.append(loss.item())
         optimizer.step()
-        #* See https://stackoverflow.com/a/53975741 for a discussion on how loss.backward() and
-        #* optimizer.step() are linked: essentially the gradients are stored on the model parameter
-        #* tensors themselves; model parameter tensors have an implicit computational graph, and when
-        #* loss takes in the predicted label (and compares it with the actual label), gradients are
-        #* calculated from predicted label backwards through its computational graph. These gradients
-        #* are stored on the tensors involved in the computational graph. optimizer.step() then iterates
-        #* through model parameters and uses the stored gradients to update them.
 
-    # schedule learning rate:
+    # Schedule learning rate:
     scheduler.step()
 
-    # statistics:
-    if (e+1) % 1 == 0:
+    # Statistics:
+    if (e + 1) % 1 == 0:
         epoch_loss = np.mean(losses)
-        print(f'Epoch: {e+1}/{setting.epochs}')
-        print(f'Used learning rate: {scheduler.get_lr()[0]}')
+        print(f'Epoch: {e + 1}/{setting.epochs}')
+        print(f'Used learning rate: {scheduler.get_last_lr()[0]}')  # Fixed
         print(f'Avg Loss: {epoch_loss}')
+        
     if (e+1) % setting.validate_epoch == 0:
-        print(f'~~~ Test Set Evaluation (Epoch: {e+1}) ~~~')
+        print(f'=================== Test Set Evaluation (Epoch: {e+1}) ===================')
         evaluation_test.evaluate()  #! WARNING: Can take a while if dataset is huge
+
+# print model state_dict
+print("Model's state_dict:")
+for param_tensor in trainer.model.state_dict():
+    print(param_tensor, "\t", trainer.model.state_dict()[param_tensor].size())
 
 torch.save(
     {
@@ -113,22 +108,5 @@ torch.save(
 )
 
 """
-Change --gpu -1 to --gpu 0 if using GPU.
-
-
-python3 preprocessmcmg.py
-
-python3 train.py \
---gpu -1 --hidden-dim 10 --weight_decay 0.0 --lr 0.01 --epochs 100 --rnn rnn \
---dataset CAL_checkin.txt \
---validate-epoch 5 --report-user 1 \
---batch-size 16 --lambda_t 0.1 --lambda_s 100
-"""
-# The following are original Flashback defaults which we don't use
-"""
-# --dataset checkins-gowalla.txt \
-# --batch-size 200 --lambda_t 0.1 --lambda_s 1000  # defaults for gowalla dataset
-
-# --dataset checkins-4sq.txt \
-# --batch-size 1024 --lambda_t 0.1 --lambda_s 100  # defaults for foursquare dataset
+    python train.py --dataset checkins-gowalla.txt --gpu 0 | tee logs/normalized/train_gowalla_50.txt
 """

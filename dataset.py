@@ -1,4 +1,4 @@
-# OK, TRANSFERRED
+# OK, TRANSFERRED 
 
 import random
 from enum import Enum
@@ -111,12 +111,12 @@ class PoiDataset(Dataset):
 
         # collect locations:
         for i in range(loc_count):
-            self.Qs[i, 0] = i
+            self.Qs[i, 0] = i # Tensor of location IDs (used for alignment).
 
         # align labels to locations (shift by one)
         for i, loc in enumerate(locs):
-            self.locs[i] = loc[:-1]
-            self.labels.append(loc[1:])
+            self.locs[i] = loc[:-1] # Remove last location
+            self.labels.append(loc[1:]) # Adds the shifted locations (starting from index 1) as labels
             # adapt time and coords:
             self.lbl_times.append(self.times[i][1:])
             self.lbl_coords.append(self.coords[i][1:])
@@ -150,7 +150,7 @@ class PoiDataset(Dataset):
         for i, (time, coord, loc, label, lbl_time, lbl_coord) in enumerate(zip(self.times, self.coords, self.locs, self.labels, self.lbl_times, self.lbl_coords)):
             seq_count = len(loc) // sequence_length  #* this is floor; how many full sequence_lengths we have in loc. The following check asserts that loc has at least sequence_length==20 elements
             assert seq_count > 0 , f"fix seq-length and min-checkins in order to have at least one test sequence in a 80/20 split!; len(loc)={len(loc)}, sequence_length={sequence_length}, len(loc)//sequence_length={len(loc) // sequence_length}; user ID after mapping={i}"  #* DEBUG SET A
-            print(f"len(loc)={len(loc)}, seq_count={seq_count}")
+            # print(f"len(loc)={len(loc)}, seq_count={seq_count}")
             seqs = []
             seq_times = []
             seq_coords = []
@@ -177,15 +177,6 @@ class PoiDataset(Dataset):
             self.max_seq_count = max(self.max_seq_count, seq_count)
             self.min_seq_count = min(self.min_seq_count, seq_count)
 
-        # statistics
-        if (self.usage == Usage.MIN_SEQ_LENGTH):
-            print(split, 'load', len(users), 'users with min_seq_count', self.min_seq_count, 'batches:', self.__len__())
-        if (self.usage == Usage.MAX_SEQ_LENGTH):
-            print(split, 'load', len(users), 'users with max_seq_count', self.max_seq_count, 'batches:', self.__len__())
-        if (self.usage == Usage.CUSTOM):
-            print(split, 'load', len(users), 'users with custom_seq_count', self.custom_seq_count, 'Batches:', self.__len__())
-
-
     def sequences_by_user(self, idx):
         return self.sequences[idx]
 
@@ -206,7 +197,7 @@ class PoiDataset(Dataset):
             # estimated capacity:
             estimated = self.capacity // self.batch_size
             result = max(self.max_seq_count, estimated)
-            print(f"self.max_seq_count={self.max_seq_count}, self.batch_size={self.batch_size}, result={result}")
+            # print(f"self.max_seq_count={self.max_seq_count}, self.batch_size={self.batch_size}, result={result}")
             return result
         if (self.usage == Usage.CUSTOM):
             return self.custom_seq_count * (len(self.users) // self.batch_size)
@@ -232,6 +223,8 @@ class PoiDataset(Dataset):
         reset_h is a flag which indicates when a new user has been replacing a previous user in the
         batch. You should reset this users hidden state to initial value h_0.
         '''
+        max_iterations = len(self.users)  # Safe upper bound
+        iterations = 0
 
         seqs = []
         times = []
@@ -248,7 +241,7 @@ class PoiDataset(Dataset):
                 max_j = self.min_seq_count
             if (self.usage == Usage.CUSTOM):
                 max_j = min(max_j, self.custom_seq_count) # use either the users maxima count or limit by custom count
-            print(f"i={i}, j={j}, max_j={max_j}")
+            # print(f"i={i}, j={j}, max_j={max_j}")
             if (j >= max_j):
                 # repalce this user in current sequence:
                 i_user = self.user_permutation[self.next_user_idx]
@@ -259,8 +252,12 @@ class PoiDataset(Dataset):
                 # ! Lmao, remember There is an externally enforced constrain of "batch size must be lower than the amount of available users"
                 # ! so the while loop below will terminate for sure
                 while self.user_permutation[self.next_user_idx] in self.active_users:
-                    raise NotImplementedError
+                    # raise NotImplementedError # Previously raised NotImplementedError; verified this edge case doesn't occur under current constraints.
+                    # print(f"User permutation index: {self.next_user_idx}, Active users: {self.active_users}, Users: {self.users}") # DEBUG
                     self.next_user_idx = (self.next_user_idx + 1) % len(self.users)
+                    iterations += 1
+                    if iterations > max_iterations:
+                        raise RuntimeError("Infinite loop detected in user replacement logic.")
                 # TODO: throw exception if wrapped around!
             # use this user:
             reset_h.append(j == 0)
@@ -282,13 +279,5 @@ class PoiDataset(Dataset):
         y_t = torch.stack(lbl_times, dim=1)   #* stack column wise, so each column is a batch (following RNN convention)
         y_s = torch.stack(lbl_coords, dim=1)  #* stack column wise, so each column is a batch (following RNN convention)
 
-        #* x.shape is (sequence_length==20, batch_size)
-        #* t.shape is (sequence_length==20, batch_size)
-        #* s.shape is (sequence_length==20, batch_size, 2)
-        #* y.shape is (sequence_length==20, batch_size)
-        #* y_t.shape is (sequence_length==20, batch_size)
-        #* y_s.shape is (sequence_length==20, batch_size, 2)
-        #* len(reset_h) is batch_size
-        #* last return value is a new tensor of the user IDs corresponding to each batch. ~.shape is (batch_size,)
         return x, t, s, y, y_t, y_s, reset_h, torch.tensor(self.active_users)
 

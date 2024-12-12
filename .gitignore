@@ -6,5 +6,11 @@ flashback/
 __pycache__/
 
 # ommit datasets
-data
+/data/
 !data/README.md
+/term_outputs/
+/saved_models/
+/synthetic_data/
+/logs/
+/normalized_data/
+/single_user/

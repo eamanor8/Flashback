@@ -1,0 +1,4 @@
+I currently have a codebase that trains a model based on location checkins of users in the dataset. 
+I want to provide the entire codebase for your review so that we can understand what is happening 
+then we can make some modifications for the code to do something which I will disclose to you later on. 
+The main scripts involved are: settings.py, dataloader.py, dataset.py, network.py, trainer.py, train.py, evaluation.py and test.py.
