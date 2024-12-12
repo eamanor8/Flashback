@@ -27,10 +27,6 @@ class Setting:
         self.parse_arguments(parser)
         args = parser.parse_args()
 
-        # logic to parse single_user_test from command-line arguments or configuration
-        parser.add_argument("--single_user_test", action="store_true", help="Run on a single user's data.")
-        self.single_user_test = args.single_user_test
-
         ###### settings ######
         # training
         self.gpu = args.gpu
