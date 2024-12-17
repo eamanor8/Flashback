@@ -1,5 +1,6 @@
 # test.py
 import random
+import torch.nn as nn
 import torch
 from dataloader import PoiDataloader
 from dataset import Split
@@ -31,7 +32,7 @@ def main():
     poi_loader.read(setting.dataset_file)
 
     # Create the test dataset and dataloader with split
-    dataset_test = poi_loader.create_dataset(setting.sequence_length, setting.batch_size, Split.ALL) #Split.TEST
+    dataset_test = poi_loader.create_dataset(setting.sequence_length, setting.batch_size, Split.ALL)
     dataloader_test = DataLoader(dataset_test, batch_size=1, shuffle=False)
 
     # # print poi_loader attributes
@@ -43,19 +44,36 @@ def main():
     # Ensure the batch size is valid
     assert setting.batch_size <= poi_loader.user_count(), 'batch size must be lower than the number of available users'
 
-    loc_count = 43326  # Number of unique locations (match with training)
-    user_count = 5000  # Number of users (match with training)
-
     # Initialize the FlashbackTrainer and model
     trainer = FlashbackTrainer(setting.lambda_t, setting.lambda_s)
     h0_strategy: FixNoiseStrategy = create_h0_strategy(setting.hidden_dim, setting.is_lstm)
-    # trainer.prepare(poi_loader.locations(), poi_loader.user_count(), setting.hidden_dim, setting.rnn_factory, setting.device) # original code
-    trainer.prepare(loc_count, user_count, setting.hidden_dim, setting.rnn_factory, setting.device)
+    trainer.prepare(poi_loader.locations(), poi_loader.user_count(), setting.hidden_dim, setting.rnn_factory, setting.device)
 
     # Load the pre-trained model
     model_path = "saved_models/pretrained.pt"  # Update this path if needed
-    checkpoint = torch.load(model_path, map_location=setting.device, weights_only=True)
-    trainer.model.load_state_dict(checkpoint["model_state_dict"])
+    checkpoint = torch.load(model_path, map_location=setting.device)
+    
+    # Modify the model to accommodate a single user's data
+    # Update encoder.weight
+    encoder_weights = checkpoint["model_state_dict"]["encoder.weight"]
+    single_user_encoder_weights = encoder_weights[:, :setting.hidden_dim]  # Assuming hidden_dim is the number of features for a single user
+    trainer.model.encoder.weight = nn.Parameter(single_user_encoder_weights)
+    
+    # Update user_encoder.weight
+    user_encoder_weights = checkpoint["model_state_dict"]["user_encoder.weight"]
+    single_user_weights = user_encoder_weights[0:1, :]  # Select the weights for a single user
+    trainer.model.user_encoder.weight = nn.Parameter(single_user_weights)
+    trainer.model.user_encoder.in_features = 1
+    
+    # Update fc.weight and fc.bias
+    fc_weights = checkpoint["model_state_dict"]["fc.weight"]
+    single_user_fc_weights = fc_weights[:setting.hidden_dim, :]  # Assuming hidden_dim is the number of features for a single user
+    trainer.model.fc.weight = nn.Parameter(single_user_fc_weights)
+    
+    fc_bias = checkpoint["model_state_dict"]["fc.bias"]
+    single_user_fc_bias = fc_bias[:setting.hidden_dim]  # Assuming hidden_dim is the number of features for a single user
+    trainer.model.fc.bias = nn.Parameter(single_user_fc_bias)
+
     print("Loaded pre-trained model from", model_path)
 
     # Print the model's state_dict

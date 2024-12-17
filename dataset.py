@@ -12,6 +12,7 @@ class Split(Enum):
     '''
     TRAIN = 0
     TEST = 1
+    ALL = 2
 
 class Usage(Enum):
     '''
@@ -141,6 +142,13 @@ class PoiDataset(Dataset):
                 self.labels[i] = label[train_thr:]
                 self.lbl_times[i] = lbl_time[train_thr:]
                 self.lbl_coords[i] = lbl_coord[train_thr:]
+            if (split == Split.ALL):
+                self.times[i] = time
+                self.coords[i] = coord
+                self.locs[i] = loc
+                self.labels[i] = label
+                self.lbl_times[i] = lbl_time
+                self.lbl_coords[i] = lbl_coord
 
         # split location and labels to sequences:
         self.max_seq_count = 0           #* maximum number of full--length-20--sequences found for a particular user
@@ -149,7 +157,7 @@ class PoiDataset(Dataset):
         #* this iterates over users i
         for i, (time, coord, loc, label, lbl_time, lbl_coord) in enumerate(zip(self.times, self.coords, self.locs, self.labels, self.lbl_times, self.lbl_coords)):
             seq_count = len(loc) // sequence_length  #* this is floor; how many full sequence_lengths we have in loc. The following check asserts that loc has at least sequence_length==20 elements
-            assert seq_count > 0 , f"fix seq-length and min-checkins in order to have at least one test sequence in a 80/20 split!; len(loc)={len(loc)}, sequence_length={sequence_length}, len(loc)//sequence_length={len(loc) // sequence_length}; user ID after mapping={i}"  #* DEBUG SET A
+            assert seq_count > 0 or len(self.users) == 1, f"fix seq-length and min-checkins in order to have at least one test sequence in a 80/20 split!; len(loc)={len(loc)}, sequence_length={sequence_length}, len(loc)//sequence_length={len(loc) // sequence_length}; user ID after mapping={i}"  #* DEBUG SET A
             # print(f"len(loc)={len(loc)}, seq_count={seq_count}")
             seqs = []
             seq_times = []

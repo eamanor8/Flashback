@@ -6,9 +6,7 @@ import time
 
 class Evaluation:
 
-    '''
-    Handles evaluation on a given POI dataset and loader.
-
+    ''' Handles evaluation on a given POI dataset and loader.
     The two metrics are MAP and recall@n. Our model predicts sequencse of
     next locations determined by the sequence_length at one pass. During evaluation we
     treat each entry of the sequence as single prediction. One such prediction
@@ -52,6 +50,11 @@ class Evaluation:
             progress_bar = tqdm(enumerate(self.dataloader), total=len(self.dataloader), desc="Evaluating", unit="batch", leave=True)
 
             for i, (x, t, s, y, y_t, y_s, reset_h, active_users) in progress_bar:
+                if self.setting.single_user_test:
+                    # Single user adjustments
+                    active_users = active_users[:1]  # Ensure it's a single-user array
+                    reset_count = reset_count[:1]    # Adjust to handle just one user
+
                 active_users = active_users.squeeze(dim=0)
                 for j, reset in enumerate(reset_h):
                     if reset:
