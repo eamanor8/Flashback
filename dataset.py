@@ -12,6 +12,7 @@ class Split(Enum):
     '''
     TRAIN = 0
     TEST = 1
+    ALL = 2
 
 class Usage(Enum):
     '''
@@ -141,6 +142,13 @@ class PoiDataset(Dataset):
                 self.labels[i] = label[train_thr:]
                 self.lbl_times[i] = lbl_time[train_thr:]
                 self.lbl_coords[i] = lbl_coord[train_thr:]
+            if (split == Split.ALL):
+                self.times[i] = time
+                self.coords[i] = coord
+                self.locs[i] = loc
+                self.labels[i] = label
+                self.lbl_times[i] = lbl_time
+                self.lbl_coords[i] = lbl_coord
 
         # split location and labels to sequences:
         self.max_seq_count = 0           #* maximum number of full--length-20--sequences found for a particular user

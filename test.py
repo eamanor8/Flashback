@@ -45,10 +45,10 @@ def main():
     h0_strategy.h0 = checkpoint["h0"]
     print("Loaded pre-trained model from", model_path)
 
-    # Print the model's state_dict
-    print("Model's state_dict:")
-    for param_tensor in trainer.model.state_dict():
-        print(param_tensor, "\t", trainer.model.state_dict()[param_tensor].size())
+    # # Print the model's state_dict
+    # print("Model's state_dict:")
+    # for param_tensor in trainer.model.state_dict():
+    #     print(param_tensor, "\t", trainer.model.state_dict()[param_tensor].size())
 
     # Initialize the evaluation
     evaluation_test = Evaluation(dataset_test, dataloader_test, poi_loader.user_count(), h0_strategy, trainer, setting)
