@@ -155,10 +155,14 @@ class PoiDataset(Dataset):
         self.min_seq_count = 10_000_000  #* minimum number of full--length-20--sequences found for a particular user
         self.capacity = 0                #* total number of full--length-20--sequences across all users
         #* this iterates over users i
+        # print content of locs using loop
+        # for i in range(len(self.locs)):
+        #     loc = self.locs[i]
+        #     print(f"i={i} |-> loc={loc}")  
+        
         for i, (time, coord, loc, label, lbl_time, lbl_coord) in enumerate(zip(self.times, self.coords, self.locs, self.labels, self.lbl_times, self.lbl_coords)):
             seq_count = len(loc) // sequence_length  #* this is floor; how many full sequence_lengths we have in loc. The following check asserts that loc has at least sequence_length==20 elements
             assert seq_count > 0 , f"fix seq-length and min-checkins in order to have at least one test sequence in a 80/20 split!; len(loc)={len(loc)}, sequence_length={sequence_length}, len(loc)//sequence_length={len(loc) // sequence_length}; user ID after mapping={i}"  #* DEBUG SET A
-            # print(f"len(loc)={len(loc)}, seq_count={seq_count}")
             seqs = []
             seq_times = []
             seq_coords = []

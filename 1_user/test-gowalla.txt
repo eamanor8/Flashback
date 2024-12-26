@@ -1,0 +1,11 @@
+parse with foursquare default settings
+use device: cuda:0
+Loaded pre-trained model from saved_models/pretrained.pt
+=================== Test Set Evaluation ===================
+Memory usage: 24.3%
+Elapsed Time: 0.53 seconds
+acc@1: 0.00000000
+acc@5: 0.14285714
+acc@10: 0.28571429
+MRR: 0.09816704
+Total Predictions: 7.0

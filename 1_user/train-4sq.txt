@@ -1,0 +1,62 @@
+parse with foursquare default settings
+use device: cuda:0
+Use flashback training. Use pytorch RNN implementation.
+Epoch: 1/5
+Used learning rate: 0.01
+Avg Loss: 2.800943160057068
+=================== Test Set Evaluation (Epoch: 1) ===================
+Elapsed Time: 0.12 seconds
+acc@1: 0.50000000
+acc@5: 0.50000000
+acc@10: 0.50000000
+MRR: 0.52272727
+Total Predictions: 2.0
+Epoch: 2/5
+Used learning rate: 0.01
+Avg Loss: 2.0909401059150694
+=================== Test Set Evaluation (Epoch: 2) ===================
+Elapsed Time: 0.07 seconds
+acc@1: 0.50000000
+acc@5: 0.50000000
+acc@10: 0.50000000
+MRR: 0.52941176
+Total Predictions: 2.0
+Epoch: 3/5
+Used learning rate: 0.01
+Avg Loss: 1.8934624806046485
+=================== Test Set Evaluation (Epoch: 3) ===================
+Elapsed Time: 0.07 seconds
+acc@1: 0.50000000
+acc@5: 0.50000000
+acc@10: 0.50000000
+MRR: 0.52777778
+Total Predictions: 2.0
+Epoch: 4/5
+Used learning rate: 0.01
+Avg Loss: 1.7421996384859084
+=================== Test Set Evaluation (Epoch: 4) ===================
+Elapsed Time: 0.07 seconds
+acc@1: 0.50000000
+acc@5: 0.50000000
+acc@10: 0.50000000
+MRR: 0.52272727
+Total Predictions: 2.0
+Epoch: 5/5
+Used learning rate: 0.01
+Avg Loss: 1.6318781211972238
+=================== Test Set Evaluation (Epoch: 5) ===================
+Elapsed Time: 0.07 seconds
+acc@1: 0.50000000
+acc@5: 0.50000000
+acc@10: 0.50000000
+MRR: 0.52083333
+Total Predictions: 2.0
+Model's state_dict:
+encoder.weight 	 torch.Size([28, 10])
+user_encoder.weight 	 torch.Size([1, 10])
+rnn.weight_ih_l0 	 torch.Size([10, 10])
+rnn.weight_hh_l0 	 torch.Size([10, 10])
+rnn.bias_ih_l0 	 torch.Size([10])
+rnn.bias_hh_l0 	 torch.Size([10])
+fc.weight 	 torch.Size([28, 20])
+fc.bias 	 torch.Size([28])

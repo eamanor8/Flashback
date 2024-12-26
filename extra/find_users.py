@@ -37,7 +37,7 @@ def save_user_ids(user_ids, filename):
 path_dataset1 = './data/checkins-4sq.txt'  # Path to the first dataset
 path_dataset2 = './data/main/checkins-4sq.txt'  # Path to the second dataset
 min_checkins = 50  # Minimum number of check-ins
-required_number_of_locations = 12  # Required number of unique locations
+required_number_of_locations = 28  # Required number of unique locations
 
 # Load unique user IDs from the first dataset
 user_ids_from_first = load_unique_user_ids(path_dataset1)

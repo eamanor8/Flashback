@@ -1,7 +1,0 @@
-parse with foursquare default settings
-use device: cuda:0
-Use flashback training. Use pytorch RNN implementation.
-Epoch: 1/5
-Used learning rate: 0.01
-Avg Loss: 8.381712128826663
-=================== Test Set Evaluation (Epoch: 1) ===================
