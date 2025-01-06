@@ -1,0 +1,2 @@
+parse with foursquare default settings
+use device: cuda:0

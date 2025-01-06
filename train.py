@@ -12,6 +12,7 @@ from setting import Setting
 from torch.utils.data import DataLoader
 from tqdm.auto import tqdm
 from trainer import FlashbackTrainer
+import csv
 
 SEED = 42
 
@@ -25,12 +26,32 @@ random.seed(SEED)
 np.random.seed(SEED)
 torch_generator = torch.manual_seed(SEED)
 
+def save_dataset(dataset, file_path):
+    with open(file_path, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(['User ID', 'Sequence', 'Time', 'Coordinates', 'Label', 'Label Time', 'Label Coordinates'])
+        for i in range(len(dataset.users)):
+            sequences = dataset.sequences_by_user(i)
+            times = dataset.sequences_times[i]
+            coords = dataset.sequences_coords[i]
+            labels = dataset.sequences_labels[i]
+            lbl_times = dataset.sequences_lbl_times[i]
+            lbl_coords = dataset.sequences_lbl_coords[i]
+            for seq, time, coord, label, lbl_time, lbl_coord in zip(sequences, times, coords, labels, lbl_times, lbl_coords):
+                writer.writerow([dataset.users[i], seq, time, coord, label, lbl_time, lbl_coord])
+
 ### load dataset ###
 poi_loader = PoiDataloader(43326, max_users=setting.max_users, min_checkins=setting.min_checkins) # loc_count: 4sq: 69005 gowalla: 121851 # 116831
 poi_loader.read(setting.dataset_file)
 dataset = poi_loader.create_dataset(setting.sequence_length, setting.batch_size, Split.TRAIN)
+# save dataset to file as a text file
+save_dataset(dataset, './1_user/preprocessed/dataset-train.csv')
+
 dataloader = DataLoader(dataset, batch_size=1, shuffle=False)
 dataset_test = poi_loader.create_dataset(setting.sequence_length, setting.batch_size, Split.TEST)
+# save dataset to file as a text file
+save_dataset(dataset_test, './1_user/preprocessed/dataset-test.csv')
+
 dataloader_test = DataLoader(dataset_test, batch_size=1, shuffle=False)
 assert setting.batch_size <= poi_loader.user_count(), 'batch size must be lower than the amount of available users'
 
