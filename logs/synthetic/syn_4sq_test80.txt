@@ -1,0 +1,14 @@
+parse with foursquare default settings
+use device: cpu
+Loaded pre-trained model from saved_models/4sq_pretrained.pt
+=================== Test Set Evaluation ===================
+Memory usage: 27.9%
+Elapsed Time: 6176.59 seconds
+recall@1: 0.00004863
+recall@5: 0.00022650
+recall@10: 0.00039866
+MAP: 0.00030489
+acc@1: 0.00004860
+acc@5: 0.00022680
+acc@10: 0.00039884
+Total Predictions: 4379648.0

@@ -11,6 +11,5 @@ __pycache__/
 /term_outputs/
 /saved_models/
 /synthetic_data/
-/logs/
 /normalized_data/
 /single_user/

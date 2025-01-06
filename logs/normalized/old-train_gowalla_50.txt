@@ -1,0 +1,214 @@
+parse with gowalla default settings
+use device: cuda:0
+Use flashback training. Use pytorch RNN implementation.
+Epoch: 1/60
+Used learning rate: 0.01
+Avg Loss: 9.635588930510364
+Epoch: 2/60
+Used learning rate: 0.01
+Avg Loss: 7.808608717272896
+Epoch: 3/60
+Used learning rate: 0.01
+Avg Loss: 6.604690640600834
+Epoch: 4/60
+Used learning rate: 0.01
+Avg Loss: 5.938019545664781
+Epoch: 5/60
+Used learning rate: 0.01
+Avg Loss: 5.571599487654507
+Epoch: 6/60
+Used learning rate: 0.01
+Avg Loss: 5.341665525450283
+Epoch: 7/60
+Used learning rate: 0.01
+Avg Loss: 5.18218634534611
+Epoch: 8/60
+Used learning rate: 0.01
+Avg Loss: 5.060796900781135
+Epoch: 9/60
+Used learning rate: 0.01
+Avg Loss: 4.968918874621218
+Epoch: 10/60
+Used learning rate: 0.01
+Avg Loss: 4.893255036644193
+Epoch: 11/60
+Used learning rate: 0.01
+Avg Loss: 4.83065193292876
+Epoch: 12/60
+Used learning rate: 0.01
+Avg Loss: 4.774325802510135
+Epoch: 13/60
+Used learning rate: 0.01
+Avg Loss: 4.724996180860583
+Epoch: 14/60
+Used learning rate: 0.01
+Avg Loss: 4.684412671662487
+Epoch: 15/60
+Used learning rate: 0.01
+Avg Loss: 4.649587624978811
+Epoch: 16/60
+Used learning rate: 0.01
+Avg Loss: 4.612316382503926
+Epoch: 17/60
+Used learning rate: 0.01
+Avg Loss: 4.580293899713819
+Epoch: 18/60
+Used learning rate: 0.01
+Avg Loss: 4.552453279148196
+Epoch: 19/60
+Used learning rate: 0.01
+Avg Loss: 4.5236396248163615
+Epoch: 20/60
+Used learning rate: 0.002
+Avg Loss: 4.501331026030073
+=================== Test Set Evaluation (Epoch: 20) ===================
+Elapsed Time: 217.91 seconds
+acc@1: 0.09762025
+acc@5: 0.22578481
+acc@10: 0.29017089
+MRR: 0.16302762
+Total Predictions: 158000.0
+Epoch: 21/60
+Used learning rate: 0.002
+Avg Loss: 4.2557695543575145
+Epoch: 22/60
+Used learning rate: 0.002
+Avg Loss: 4.1384183017447524
+Epoch: 23/60
+Used learning rate: 0.002
+Avg Loss: 4.107036309124254
+Epoch: 24/60
+Used learning rate: 0.002
+Avg Loss: 4.09228545505407
+Epoch: 25/60
+Used learning rate: 0.002
+Avg Loss: 4.080268325069933
+Epoch: 26/60
+Used learning rate: 0.002
+Avg Loss: 4.0711182871239675
+Epoch: 27/60
+Used learning rate: 0.002
+Avg Loss: 4.062004361090181
+Epoch: 28/60
+Used learning rate: 0.002
+Avg Loss: 4.05803831383651
+Epoch: 29/60
+Used learning rate: 0.002
+Avg Loss: 4.052813860006207
+Epoch: 30/60
+Used learning rate: 0.002
+Avg Loss: 4.046288588161552
+Epoch: 31/60
+Used learning rate: 0.002
+Avg Loss: 4.038138915704675
+Epoch: 32/60
+Used learning rate: 0.002
+Avg Loss: 4.035914696633729
+Epoch: 33/60
+Used learning rate: 0.002
+Avg Loss: 4.0270998148244885
+Epoch: 34/60
+Used learning rate: 0.002
+Avg Loss: 4.0253370668863795
+Epoch: 35/60
+Used learning rate: 0.002
+Avg Loss: 4.009951963521854
+Epoch: 36/60
+Used learning rate: 0.002
+Avg Loss: 4.015332040134302
+Epoch: 37/60
+Used learning rate: 0.002
+Avg Loss: 4.011168229701391
+Epoch: 38/60
+Used learning rate: 0.002
+Avg Loss: 4.00537485326742
+Epoch: 39/60
+Used learning rate: 0.002
+Avg Loss: 4.0005032905151054
+Epoch: 40/60
+Used learning rate: 0.0004
+Avg Loss: 3.9948897625508093
+=================== Test Set Evaluation (Epoch: 40) ===================
+Elapsed Time: 218.82 seconds
+acc@1: 0.11225949
+acc@5: 0.23998101
+acc@10: 0.30175949
+MRR: 0.17698294
+Total Predictions: 158000.0
+Epoch: 41/60
+Used learning rate: 0.0004
+Avg Loss: 3.9202049188044743
+Epoch: 42/60
+Used learning rate: 0.0004
+Avg Loss: 3.9118875936649773
+Epoch: 43/60
+Used learning rate: 0.0004
+Avg Loss: 3.9083205726990013
+Epoch: 44/60
+Used learning rate: 0.0004
+Avg Loss: 3.9028591710580662
+Epoch: 45/60
+Used learning rate: 0.0004
+Avg Loss: 3.90898441296651
+Epoch: 46/60
+Used learning rate: 0.0004
+Avg Loss: 3.907621056058348
+Epoch: 47/60
+Used learning rate: 0.0004
+Avg Loss: 3.904824361009889
+Epoch: 48/60
+Used learning rate: 0.0004
+Avg Loss: 3.899865357636364
+Epoch: 49/60
+Used learning rate: 0.0004
+Avg Loss: 3.9008005966786214
+Epoch: 50/60
+Used learning rate: 0.0004
+Avg Loss: 3.897232859415779
+Epoch: 51/60
+Used learning rate: 0.0004
+Avg Loss: 3.898203238302617
+Epoch: 52/60
+Used learning rate: 0.0004
+Avg Loss: 3.89433677505371
+Epoch: 53/60
+Used learning rate: 0.0004
+Avg Loss: 3.8983155063840154
+Epoch: 54/60
+Used learning rate: 0.0004
+Avg Loss: 3.8985076610004366
+Epoch: 55/60
+Used learning rate: 0.0004
+Avg Loss: 3.8949165177657616
+Epoch: 56/60
+Used learning rate: 0.0004
+Avg Loss: 3.8949041248582508
+Epoch: 57/60
+Used learning rate: 0.0004
+Avg Loss: 3.8925906719946273
+Epoch: 58/60
+Used learning rate: 0.0004
+Avg Loss: 3.893420609150738
+Epoch: 59/60
+Used learning rate: 0.0004
+Avg Loss: 3.888996115591502
+Epoch: 60/60
+Used learning rate: 8e-05
+Avg Loss: 3.886120079212661
+=================== Test Set Evaluation (Epoch: 60) ===================
+Elapsed Time: 214.59 seconds
+acc@1: 0.11208861
+acc@5: 0.23773418
+acc@10: 0.29795570
+MRR: 0.17560808
+Total Predictions: 158000.0
+
+Model's state_dict:
+encoder.weight 	 torch.Size([43826, 10])
+user_encoder.weight 	 torch.Size([5000, 10])
+rnn.weight_ih_l0 	 torch.Size([10, 10])
+rnn.weight_hh_l0 	 torch.Size([10, 10])
+rnn.bias_ih_l0 	 torch.Size([10])
+rnn.bias_hh_l0 	 torch.Size([10])
+fc.weight 	 torch.Size([43826, 20])
+fc.bias 	 torch.Size([43826])

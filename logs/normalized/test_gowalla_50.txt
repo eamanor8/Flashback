@@ -1,0 +1,20 @@
+parse with gowalla default settings
+use device: cuda:0
+Loaded pre-trained model from saved_models/pretrained.pt
+Model's state_dict:
+encoder.weight 	 torch.Size([43326, 10])
+user_encoder.weight 	 torch.Size([5000, 10])
+rnn.weight_ih_l0 	 torch.Size([10, 10])
+rnn.weight_hh_l0 	 torch.Size([10, 10])
+rnn.bias_ih_l0 	 torch.Size([10])
+rnn.bias_hh_l0 	 torch.Size([10])
+fc.weight 	 torch.Size([43326, 20])
+fc.bias 	 torch.Size([43326])
+=================== Test Set Evaluation ===================
+Memory usage: 22.9%
+Elapsed Time: 738.76 seconds
+acc@1: 0.00041791
+acc@5: 0.00155037
+acc@10: 0.00268097
+MRR: 0.00172845
+Total Predictions: 536000.0

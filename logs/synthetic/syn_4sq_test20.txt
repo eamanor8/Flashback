@@ -1,0 +1,30 @@
+parse with foursquare default settings
+use device: cpu
+Loaded pre-trained model from saved_models/4sq_pretrained.pt
+Model's state_dict:
+encoder.weight 	 torch.Size([68879, 10])
+user_encoder.weight 	 torch.Size([45343, 10])
+rnn.weight_ih_l0 	 torch.Size([10, 10])
+rnn.weight_hh_l0 	 torch.Size([10, 10])
+rnn.bias_ih_l0 	 torch.Size([10])
+rnn.bias_hh_l0 	 torch.Size([10])
+fc.weight 	 torch.Size([68879, 20])
+fc.bias 	 torch.Size([68879])
+Model architecture:
+Flashback(
+  (encoder): Embedding(68879, 10)
+  (user_encoder): Embedding(45343, 10)
+  (rnn): RNN(10, 10)
+  (fc): Linear(in_features=20, out_features=68879, bias=True)
+)
+=================== Test Set Evaluation ===================
+Memory usage: 26.9%
+Elapsed Time: 1564.77 seconds
+recall@1: 0.00005936
+recall@5: 0.00024031
+recall@10: 0.00039733
+MAP: 0.00031333
+acc@1: 0.00005936
+acc@5: 0.00024031
+acc@10: 0.00039733
+Total Predictions: 1044480.0
