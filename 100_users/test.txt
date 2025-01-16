@@ -1,2 +1,506 @@
 parse with foursquare default settings
 use device: cuda:0
+Loaded pre-trained model from saved_models/pretrained.pt
+=================== Test Set Evaluation ===================
+Memory usage: 13.6%
+User 0:
+  Total Predictions: 510.0
+  Recall@1: 0.23921569
+  Recall@5: 0.58039216
+  Recall@10: 0.73137255
+User 1:
+  Total Predictions: 580.0
+  Recall@1: 0.23965517
+  Recall@5: 0.58965517
+  Recall@10: 0.76379310
+User 2:
+  Total Predictions: 940.0
+  Recall@1: 0.23936170
+  Recall@5: 0.57872340
+  Recall@10: 0.76382979
+User 3:
+  Total Predictions: 320.0
+  Recall@1: 0.20937500
+  Recall@5: 0.52500000
+  Recall@10: 0.69687500
+User 4:
+  Total Predictions: 550.0
+  Recall@1: 0.23636364
+  Recall@5: 0.52727273
+  Recall@10: 0.71818182
+User 5:
+  Total Predictions: 380.0
+  Recall@1: 0.24210526
+  Recall@5: 0.55263158
+  Recall@10: 0.72631579
+User 6:
+  Total Predictions: 430.0
+  Recall@1: 0.19767442
+  Recall@5: 0.57441860
+  Recall@10: 0.74418605
+User 7:
+  Total Predictions: 330.0
+  Recall@1: 0.19090909
+  Recall@5: 0.53939394
+  Recall@10: 0.70606061
+User 8:
+  Total Predictions: 360.0
+  Recall@1: 0.22222222
+  Recall@5: 0.57500000
+  Recall@10: 0.71666667
+User 9:
+  Total Predictions: 400.0
+  Recall@1: 0.18000000
+  Recall@5: 0.53000000
+  Recall@10: 0.71500000
+User 10:
+  Total Predictions: 500.0
+  Recall@1: 0.25200000
+  Recall@5: 0.60000000
+  Recall@10: 0.80600000
+User 11:
+  Total Predictions: 390.0
+  Recall@1: 0.26410256
+  Recall@5: 0.64102564
+  Recall@10: 0.82051282
+User 12:
+  Total Predictions: 330.0
+  Recall@1: 0.28484848
+  Recall@5: 0.59393939
+  Recall@10: 0.80909091
+User 13:
+  Total Predictions: 350.0
+  Recall@1: 0.30857143
+  Recall@5: 0.62857143
+  Recall@10: 0.82857143
+User 14:
+  Total Predictions: 490.0
+  Recall@1: 0.24285714
+  Recall@5: 0.61020408
+  Recall@10: 0.80612245
+User 15:
+  Total Predictions: 320.0
+  Recall@1: 0.26875000
+  Recall@5: 0.62500000
+  Recall@10: 0.83125000
+User 16:
+  Total Predictions: 380.0
+  Recall@1: 0.26315789
+  Recall@5: 0.60263158
+  Recall@10: 0.78684211
+User 17:
+  Total Predictions: 360.0
+  Recall@1: 0.29444444
+  Recall@5: 0.61388889
+  Recall@10: 0.82777778
+User 18:
+  Total Predictions: 350.0
+  Recall@1: 0.29428571
+  Recall@5: 0.67142857
+  Recall@10: 0.83142857
+User 19:
+  Total Predictions: 410.0
+  Recall@1: 0.22926829
+  Recall@5: 0.57073171
+  Recall@10: 0.73658537
+User 20:
+  Total Predictions: 520.0
+  Recall@1: 0.24615385
+  Recall@5: 0.57115385
+  Recall@10: 0.71538462
+User 21:
+  Total Predictions: 400.0
+  Recall@1: 0.24750000
+  Recall@5: 0.55250000
+  Recall@10: 0.73000000
+User 22:
+  Total Predictions: 330.0
+  Recall@1: 0.23939394
+  Recall@5: 0.58484848
+  Recall@10: 0.74242424
+User 23:
+  Total Predictions: 390.0
+  Recall@1: 0.20256410
+  Recall@5: 0.55897436
+  Recall@10: 0.68717949
+User 24:
+  Total Predictions: 500.0
+  Recall@1: 0.21200000
+  Recall@5: 0.49200000
+  Recall@10: 0.65400000
+User 25:
+  Total Predictions: 340.0
+  Recall@1: 0.21176471
+  Recall@5: 0.50294118
+  Recall@10: 0.65882353
+User 26:
+  Total Predictions: 410.0
+  Recall@1: 0.20487805
+  Recall@5: 0.50975610
+  Recall@10: 0.67317073
+User 27:
+  Total Predictions: 440.0
+  Recall@1: 0.19772727
+  Recall@5: 0.48409091
+  Recall@10: 0.66818182
+User 28:
+  Total Predictions: 670.0
+  Recall@1: 0.21791045
+  Recall@5: 0.50447761
+  Recall@10: 0.64925373
+User 29:
+  Total Predictions: 380.0
+  Recall@1: 0.18157895
+  Recall@5: 0.50789474
+  Recall@10: 0.65263158
+User 30:
+  Total Predictions: 390.0
+  Recall@1: 0.18461538
+  Recall@5: 0.49230769
+  Recall@10: 0.64871795
+User 31:
+  Total Predictions: 410.0
+  Recall@1: 0.20000000
+  Recall@5: 0.49268293
+  Recall@10: 0.65365854
+User 32:
+  Total Predictions: 420.0
+  Recall@1: 0.24047619
+  Recall@5: 0.54761905
+  Recall@10: 0.70476190
+User 33:
+  Total Predictions: 540.0
+  Recall@1: 0.20740741
+  Recall@5: 0.51851852
+  Recall@10: 0.65925926
+User 34:
+  Total Predictions: 330.0
+  Recall@1: 0.22121212
+  Recall@5: 0.55151515
+  Recall@10: 0.68181818
+User 35:
+  Total Predictions: 630.0
+  Recall@1: 0.21904762
+  Recall@5: 0.49523810
+  Recall@10: 0.63015873
+User 36:
+  Total Predictions: 490.0
+  Recall@1: 0.18571429
+  Recall@5: 0.50612245
+  Recall@10: 0.64897959
+User 37:
+  Total Predictions: 340.0
+  Recall@1: 0.20000000
+  Recall@5: 0.48823529
+  Recall@10: 0.65000000
+User 38:
+  Total Predictions: 340.0
+  Recall@1: 0.16764706
+  Recall@5: 0.49117647
+  Recall@10: 0.66764706
+User 39:
+  Total Predictions: 460.0
+  Recall@1: 0.18478261
+  Recall@5: 0.49565217
+  Recall@10: 0.65652174
+User 40:
+  Total Predictions: 440.0
+  Recall@1: 0.19318182
+  Recall@5: 0.48181818
+  Recall@10: 0.64090909
+User 41:
+  Total Predictions: 510.0
+  Recall@1: 0.19411765
+  Recall@5: 0.51176471
+  Recall@10: 0.64705882
+User 42:
+  Total Predictions: 370.0
+  Recall@1: 0.22972973
+  Recall@5: 0.48918919
+  Recall@10: 0.65135135
+User 43:
+  Total Predictions: 970.0
+  Recall@1: 0.22989691
+  Recall@5: 0.52577320
+  Recall@10: 0.67525773
+User 44:
+  Total Predictions: 320.0
+  Recall@1: 0.19062500
+  Recall@5: 0.46250000
+  Recall@10: 0.57500000
+User 45:
+  Total Predictions: 420.0
+  Recall@1: 0.21428571
+  Recall@5: 0.53809524
+  Recall@10: 0.67380952
+User 46:
+  Total Predictions: 330.0
+  Recall@1: 0.18181818
+  Recall@5: 0.50000000
+  Recall@10: 0.66666667
+User 47:
+  Total Predictions: 340.0
+  Recall@1: 0.22941176
+  Recall@5: 0.52058824
+  Recall@10: 0.64705882
+User 48:
+  Total Predictions: 440.0
+  Recall@1: 0.22272727
+  Recall@5: 0.56590909
+  Recall@10: 0.70909091
+User 49:
+  Total Predictions: 580.0
+  Recall@1: 0.23275862
+  Recall@5: 0.57586207
+  Recall@10: 0.73793103
+User 50:
+  Total Predictions: 440.0
+  Recall@1: 0.24772727
+  Recall@5: 0.56590909
+  Recall@10: 0.71363636
+User 51:
+  Total Predictions: 560.0
+  Recall@1: 0.25000000
+  Recall@5: 0.57142857
+  Recall@10: 0.71250000
+User 52:
+  Total Predictions: 340.0
+  Recall@1: 0.26176471
+  Recall@5: 0.55588235
+  Recall@10: 0.67647059
+User 53:
+  Total Predictions: 500.0
+  Recall@1: 0.23200000
+  Recall@5: 0.59400000
+  Recall@10: 0.74600000
+User 54:
+  Total Predictions: 420.0
+  Recall@1: 0.26904762
+  Recall@5: 0.60714286
+  Recall@10: 0.76190476
+User 55:
+  Total Predictions: 570.0
+  Recall@1: 0.21754386
+  Recall@5: 0.57017544
+  Recall@10: 0.70701754
+User 56:
+  Total Predictions: 320.0
+  Recall@1: 0.27187500
+  Recall@5: 0.61250000
+  Recall@10: 0.74062500
+User 57:
+  Total Predictions: 440.0
+  Recall@1: 0.22954545
+  Recall@5: 0.56136364
+  Recall@10: 0.68181818
+User 58:
+  Total Predictions: 450.0
+  Recall@1: 0.22000000
+  Recall@5: 0.53777778
+  Recall@10: 0.68888889
+User 59:
+  Total Predictions: 620.0
+  Recall@1: 0.22580645
+  Recall@5: 0.51290323
+  Recall@10: 0.67258065
+User 60:
+  Total Predictions: 460.0
+  Recall@1: 0.22608696
+  Recall@5: 0.52826087
+  Recall@10: 0.70869565
+User 61:
+  Total Predictions: 360.0
+  Recall@1: 0.19722222
+  Recall@5: 0.53333333
+  Recall@10: 0.71666667
+User 62:
+  Total Predictions: 670.0
+  Recall@1: 0.22388060
+  Recall@5: 0.51492537
+  Recall@10: 0.68507463
+User 63:
+  Total Predictions: 380.0
+  Recall@1: 0.19736842
+  Recall@5: 0.51578947
+  Recall@10: 0.67894737
+User 64:
+  Total Predictions: 660.0
+  Recall@1: 0.19545455
+  Recall@5: 0.48181818
+  Recall@10: 0.64242424
+User 65:
+  Total Predictions: 430.0
+  Recall@1: 0.22325581
+  Recall@5: 0.52093023
+  Recall@10: 0.69534884
+User 66:
+  Total Predictions: 420.0
+  Recall@1: 0.15952381
+  Recall@5: 0.47857143
+  Recall@10: 0.64285714
+User 67:
+  Total Predictions: 530.0
+  Recall@1: 0.20943396
+  Recall@5: 0.51320755
+  Recall@10: 0.64339623
+User 68:
+  Total Predictions: 360.0
+  Recall@1: 0.21388889
+  Recall@5: 0.50000000
+  Recall@10: 0.68055556
+User 69:
+  Total Predictions: 670.0
+  Recall@1: 0.23731343
+  Recall@5: 0.55970149
+  Recall@10: 0.70597015
+User 70:
+  Total Predictions: 380.0
+  Recall@1: 0.22105263
+  Recall@5: 0.54736842
+  Recall@10: 0.69736842
+User 71:
+  Total Predictions: 330.0
+  Recall@1: 0.22121212
+  Recall@5: 0.54242424
+  Recall@10: 0.66969697
+User 72:
+  Total Predictions: 330.0
+  Recall@1: 0.22424242
+  Recall@5: 0.52121212
+  Recall@10: 0.67272727
+User 73:
+  Total Predictions: 380.0
+  Recall@1: 0.22105263
+  Recall@5: 0.58157895
+  Recall@10: 0.73157895
+User 74:
+  Total Predictions: 360.0
+  Recall@1: 0.31111111
+  Recall@5: 0.66666667
+  Recall@10: 0.78888889
+User 75:
+  Total Predictions: 410.0
+  Recall@1: 0.27804878
+  Recall@5: 0.66585366
+  Recall@10: 0.80975610
+User 76:
+  Total Predictions: 330.0
+  Recall@1: 0.33939394
+  Recall@5: 0.63939394
+  Recall@10: 0.76666667
+User 77:
+  Total Predictions: 830.0
+  Recall@1: 0.26385542
+  Recall@5: 0.60000000
+  Recall@10: 0.74457831
+User 78:
+  Total Predictions: 460.0
+  Recall@1: 0.28043478
+  Recall@5: 0.61956522
+  Recall@10: 0.75000000
+User 79:
+  Total Predictions: 390.0
+  Recall@1: 0.32307692
+  Recall@5: 0.68974359
+  Recall@10: 0.83333333
+User 80:
+  Total Predictions: 520.0
+  Recall@1: 0.27884615
+  Recall@5: 0.58846154
+  Recall@10: 0.72115385
+User 81:
+  Total Predictions: 510.0
+  Recall@1: 0.29215686
+  Recall@5: 0.61568627
+  Recall@10: 0.73137255
+User 82:
+  Total Predictions: 340.0
+  Recall@1: 0.25294118
+  Recall@5: 0.60882353
+  Recall@10: 0.73529412
+User 83:
+  Total Predictions: 540.0
+  Recall@1: 0.25370370
+  Recall@5: 0.57222222
+  Recall@10: 0.70370370
+User 84:
+  Total Predictions: 390.0
+  Recall@1: 0.27948718
+  Recall@5: 0.61538462
+  Recall@10: 0.73846154
+User 85:
+  Total Predictions: 370.0
+  Recall@1: 0.25135135
+  Recall@5: 0.58378378
+  Recall@10: 0.72972973
+User 86:
+  Total Predictions: 520.0
+  Recall@1: 0.23269231
+  Recall@5: 0.53846154
+  Recall@10: 0.67500000
+User 87:
+  Total Predictions: 600.0
+  Recall@1: 0.19833333
+  Recall@5: 0.48500000
+  Recall@10: 0.63333333
+User 88:
+  Total Predictions: 330.0
+  Recall@1: 0.21212121
+  Recall@5: 0.50303030
+  Recall@10: 0.63030303
+User 89:
+  Total Predictions: 410.0
+  Recall@1: 0.20731707
+  Recall@5: 0.48292683
+  Recall@10: 0.61707317
+User 90:
+  Total Predictions: 360.0
+  Recall@1: 0.16944444
+  Recall@5: 0.48055556
+  Recall@10: 0.60833333
+User 91:
+  Total Predictions: 360.0
+  Recall@1: 0.20555556
+  Recall@5: 0.46111111
+  Recall@10: 0.58888889
+User 92:
+  Total Predictions: 480.0
+  Recall@1: 0.20000000
+  Recall@5: 0.45208333
+  Recall@10: 0.63333333
+User 93:
+  Total Predictions: 470.0
+  Recall@1: 0.16170213
+  Recall@5: 0.43191489
+  Recall@10: 0.61063830
+User 94:
+  Total Predictions: 320.0
+  Recall@1: 0.17812500
+  Recall@5: 0.48437500
+  Recall@10: 0.64687500
+User 95:
+  Total Predictions: 350.0
+  Recall@1: 0.18285714
+  Recall@5: 0.51714286
+  Recall@10: 0.66285714
+User 96:
+  Total Predictions: 330.0
+  Recall@1: 0.23636364
+  Recall@5: 0.50303030
+  Recall@10: 0.64242424
+User 97:
+  Total Predictions: 300.0
+  Recall@1: 0.20666667
+  Recall@5: 0.47333333
+  Recall@10: 0.65666667
+User 98:
+  Total Predictions: 250.0
+  Recall@1: 0.19200000
+  Recall@5: 0.44400000
+  Recall@10: 0.63200000
+Elapsed Time: 59.42 seconds
+acc@1: 0.22825092
+acc@5: 0.54551282
+acc@10: 0.70077839
+MRR: 0.37529964
+Total Predictions: 43680.0

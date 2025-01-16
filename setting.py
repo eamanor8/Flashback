@@ -78,7 +78,7 @@ class Setting:
 
     def parse_foursquare(self, parser):
         # defaults for foursquare dataset
-        parser.add_argument('--batch-size', default=1, type=int, help='amount of users to process in one pass (batching)') # default 1024
+        parser.add_argument('--batch-size', default=10, type=int, help='amount of users to process in one pass (batching)') # default 1024
         parser.add_argument('--lambda_t', default=0.1, type=float, help='decay factor for temporal data')
         parser.add_argument('--lambda_s', default=100, type=float, help='decay factor for spatial data')
 

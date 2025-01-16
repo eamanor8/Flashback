@@ -147,3 +147,19 @@ class PoiDataloader():
         self.times.append(user_time)
         self.coords.append(user_coord)
         self.locs.append(user_loc)
+
+        # # Print mapping between original location IDs and new IDs
+        # print("Mapping between original location IDs and new IDs:")
+        # for original_id, new_id in self.poi2id.items():
+        #     print(f"{original_id}: {new_id}")
+
+        # Save location-mapping to a file
+        with open('./100_users/location-mappings.txt', 'w') as f:
+            for original_id, new_id in self.poi2id.items():
+                f.write(f"{original_id}: {new_id}\n")
+        
+        # Save userID-mapping to a file
+        with open('./100_users/userID-mappings.txt', 'w') as f:
+            for original_id, new_id in self.user2id.items():
+                f.write(f"{original_id}: {new_id}\n")
+        

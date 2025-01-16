@@ -34,118 +34,115 @@ class Evaluation:
 
         start_time = time.time()  # Start timer
 
-        with torch.no_grad():
-            iter_cnt = 0
-            recall1 = 0
-            recall5 = 0
-            recall10 = 0
-            average_precision = 0.0
+        # Open file once for writing at the start of evaluation
+        with open("./100_users/User-Predictions&Sequences.txt", "w") as f:
+            with torch.no_grad():
+                iter_cnt = 0
+                recall1 = 0
+                recall5 = 0
+                recall10 = 0
+                average_precision = 0.0
 
-            u_iter_cnt = np.zeros(self.user_count)
-            u_recall1 = np.zeros(self.user_count)
-            u_recall5 = np.zeros(self.user_count)
-            u_recall10 = np.zeros(self.user_count)
-            u_average_precision = np.zeros(self.user_count)
-
-            if self.setting.batch_size == 1:
-                reset_count = torch.zeros(1)  # Initialize reset_count with a single element
-            else:
+                u_iter_cnt = np.zeros(self.user_count)
+                u_recall1 = np.zeros(self.user_count)
+                u_recall5 = np.zeros(self.user_count)
+                u_recall10 = np.zeros(self.user_count)
+                u_average_precision = np.zeros(self.user_count)
                 reset_count = torch.zeros(self.user_count)
 
-            # Progress bar initialization
-            progress_bar = tqdm(enumerate(self.dataloader), total=len(self.dataloader), desc="Evaluating", unit="batch", leave=True)
+                # Progress bar initialization
+                progress_bar = tqdm(enumerate(self.dataloader), total=len(self.dataloader), desc="Evaluating", unit="batch", leave=True)
 
-            for i, (x, t, s, y, y_t, y_s, reset_h, active_users) in progress_bar:
-                active_users = active_users.view(-1)  # Flatten active_users to ensure it is 1-D
+                for i, (x, t, s, y, y_t, y_s, reset_h, active_users) in progress_bar:
+                    active_users = active_users.squeeze(dim=0)
+                    for j, reset in enumerate(reset_h):
+                        if reset:
+                            if self.setting.is_lstm:
+                                hc = self.h0_strategy.on_reset_test(active_users[j], self.setting.device)
+                                h[0][0, j] = hc[0]
+                                h[1][0, j] = hc[1]
+                            else:
+                                h[0, j] = self.h0_strategy.on_reset_test(active_users[j], self.setting.device)
+                            reset_count[active_users[j]] += 1
 
-                # print(f"Batch {i}: Active Users = {active_users.tolist()}, Reset Count Size = {reset_count.size(0)}")
+                    # Preprocess input tensors
+                    x = x.squeeze(dim=0).to(self.setting.device)
+                    t = t.squeeze(dim=0).to(self.setting.device)
+                    s = s.squeeze(dim=0).to(self.setting.device)
+                    y = y.squeeze(dim=0).to(self.setting.device)
+                    y_t = y_t.squeeze(dim=0).to(self.setting.device)
+                    y_s = y_s.squeeze(dim=0).to(self.setting.device)
 
-                for j, reset in enumerate(reset_h):
-                    if active_users[j] >= reset_count.size(0):
-                        # print(f"Skipping user with out-of-bounds index: {active_users[j]}")
-                        continue
+                    active_users = active_users.to(self.setting.device)
 
-                    if reset:
-                        user_id = active_users[j].item()  # Convert to Python integer
+                    # Evaluate predictions
+                    out, h = self.trainer.evaluate(x, t, s, y_t, y_s, h, active_users) # `out` shape: (sequence_length, batch_size, loc_count)
+                    out = out.permute(1, 0, 2)  # (batch_size, sequence_length, loc_count)
+                    y = y.permute(1, 0)  # (batch_size, sequence_length)
 
-                        if self.setting.is_lstm:
-                            hc = self.h0_strategy.on_reset_test(user_id, self.setting.device)
-                            h[0][0, j] = hc[0]
-                            h[1][0, j] = hc[1]
-                        else:
-                            h[0, j] = self.h0_strategy.on_reset_test(user_id, self.setting.device)
+                    
+                    for j in range(out.shape[0]):  # self.setting.batch_size # out.shape[0]:
+                        o = out[j]  # Predictions for one user
+                        o_n = o.cpu().detach().numpy()
+                        ind = np.argpartition(o_n, -10, axis=1)[:, -10:]  # Top-10 indices
 
-                        reset_count[user_id] += 1
+                        y_j = y[:,j]  # True labels for one user
 
-                        # if reset_count[user_id] > 1:
-                        #     # print(f"User {user_id} reset count exceeded 1. Current count: {reset_count[user_id]}")
+                        if reset:
+                            user_id = active_users[j].item()  # Convert to Python integer
 
-                # Preprocess input tensors
-                x = x.squeeze(dim=0).to(self.setting.device)
-                t = t.squeeze(dim=0).to(self.setting.device)
-                s = s.squeeze(dim=0).to(self.setting.device)
-                y = y.squeeze(dim=0).to(self.setting.device)
-                y_t = y_t.squeeze(dim=0).to(self.setting.device)
-                y_s = y_s.squeeze(dim=0).to(self.setting.device)
+                        f.write(f"User {user_id} Predictions:\n")
+                        for k in range(len(y_j)):
+                            if reset_count[active_users[j]] > 1:
+                                continue  # Skip already evaluated users.
 
-                active_users = active_users.to(self.setting.device)
+                            ind_k = ind[k]  # Top-10 indices for k-th sequence
+                            r = torch.tensor(ind_k[np.argsort(-o_n[k, ind_k], axis=0)], device=self.setting.device)  # Sorted top-10 predictions
+                            t = y_j[k].to(self.setting.device)  # True label
 
-                # Evaluate predictions
-                out, h = self.trainer.evaluate(x, t, s, y_t, y_s, h, active_users) # `out` shape: (sequence_length, batch_size, loc_count)
-                out = out.permute(1, 0, 2)  # (batch_size, sequence_length, loc_count)
-                y = y.permute(1, 0)  # (batch_size, sequence_length)
+                            sequence = x[k].to(self.setting.device)  # Sequence data
 
-                for j in range(out.shape[0]):  # self.setting.batch_size # out.shape[0]:
-                    o = out[j]  # Predictions for one user
-                    o_n = o.cpu().detach().numpy()
-                    ind = np.argpartition(o_n, -10, axis=1)[:, -10:]  # Top-10 indices
+                            f.write(f"  Sequence {k}:\n")
+                            f.write(f"    Sequence Data: {[seq.item() for seq in sequence]}\n")
+                            f.write(f"    True Label: {t.item()}\n")
+                            f.write(f"    Top-10 Predictions: {[r_i.item() for r_i in r]}\n\n")
 
-                    y_j = y[:, j]  # True labels for one user
-                    if j >= active_users.size(0):
-                        # print(f"Skipping because active_users size {active_users.size(0)} is less than index {j}")
-                        continue  # Skip if j is out of bounds for active_users
+                            # Mean Average Precision (MAP)
+                            r_kj = o_n[k, :]
+                            t_val = r_kj[t]
+                            upper = np.where(r_kj > t_val)[0]
+                            precision = 1.0 / (1 + len(upper))
 
-                    for k in range(len(y_j)):
-                        if active_users[j] >= reset_count.size(0):
-                            # print(f"Skipping reset count check due to out-of-bounds access at index {active_users[j]}")
-                            continue  # Check if the index is within the bounds of reset_count
+                            # Recall@k calculations
+                            u_iter_cnt[active_users[j]] += 1
+                            u_recall1[active_users[j]] += t in r[:1]
+                            u_recall5[active_users[j]] += t in r[:5]
+                            u_recall10[active_users[j]] += t in r[:10]
 
-                        if reset_count[active_users[j]] > 1:
-                            continue  # Skip already evaluated users
+                            u_average_precision[active_users[j]] += precision
 
-                        ind_k = ind[k]  # Top-10 indices for k-th sequence
-                        r = torch.tensor(ind_k[np.argsort(-o_n[k, ind_k], axis=0)], device=self.setting.device)  # Sorted top-10 predictions
-                        t = y_j[k].to(self.setting.device)  # True label for k-th sequence
+                # Final Recall and MAP calculations
+                for j in range(self.user_count):
+                    print(f"User {j}:")
+                    print(f"  Total Predictions: {u_iter_cnt[j]}")
+                    print(f"  Acc@1: {u_recall1[j] / u_iter_cnt[j] if u_iter_cnt[j] > 0 else 0:.8f}")
+                    print(f"  Acc@5: {u_recall5[j] / u_iter_cnt[j] if u_iter_cnt[j] > 0 else 0:.8f}")
+                    print(f"  Acc@10: {u_recall10[j] / u_iter_cnt[j] if u_iter_cnt[j] > 0 else 0:.8f}")
+                    
+                    iter_cnt += u_iter_cnt[j]
+                    recall1 += u_recall1[j]
+                    recall5 += u_recall5[j]
+                    recall10 += u_recall10[j]
+                    average_precision += u_average_precision[j]
 
-                        # Mean Average Precision (MAP)
-                        r_kj = o_n[k, :]
-                        t_val = r_kj[t]
-                        upper = np.where(r_kj > t_val)[0]
-                        precision = 1.0 / (1 + len(upper))
+                elapsed_time = time.time() - start_time  # End timer
 
-                        # Recall@k calculations
-                        u_iter_cnt[active_users[j]] += 1
-                        u_recall1[active_users[j]] += t in r[:1]
-                        u_recall5[active_users[j]] += t in r[:5]
-                        u_recall10[active_users[j]] += t in r[:10]
-
-                        u_average_precision[active_users[j]] += precision
-
-            # Final Recall and MAP calculations
-            for j in range(self.user_count):
-                iter_cnt += u_iter_cnt[j]
-                recall1 += u_recall1[j]
-                recall5 += u_recall5[j]
-                recall10 += u_recall10[j]
-                average_precision += u_average_precision[j]
-
-            elapsed_time = time.time() - start_time  # End timer
-
-            # Print results
-            formatter = "{0:.8f}"
-            print(f"Elapsed Time: {elapsed_time:.2f} seconds")
-            print(f"acc@1: {formatter.format(recall1 / iter_cnt)}")
-            print(f"acc@5: {formatter.format(recall5 / iter_cnt)}")
-            print(f"acc@10: {formatter.format(recall10 / iter_cnt)}")
-            print(f"MRR: {formatter.format(average_precision / iter_cnt)}")
-            print(f"Total Predictions: {iter_cnt}")
+                # Print results
+                formatter = "{0:.8f}"
+                print("\n\n =================================================================")
+                print(f"Elapsed Time: {elapsed_time:.2f} seconds")
+                print(f"acc@1: {formatter.format(recall1 / iter_cnt)}")
+                print(f"acc@5: {formatter.format(recall5 / iter_cnt)}")
+                print(f"acc@10: {formatter.format(recall10 / iter_cnt)}")
+                print(f"MRR: {formatter.format(average_precision / iter_cnt)}")
+                print(f"Total Predictions: {iter_cnt}")

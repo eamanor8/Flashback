@@ -55,7 +55,7 @@ def calculate_sequences(user_id, sequence_length, dataset):
     return user_data, total_checkins, total_sequences
 
 # Example usage
-user_id =  510  # Specify the user ID
+user_id =  7127  # Specify the user ID
 sequence_length = 10  # Specify the sequence length
 # dataset = load_dataset('./data/checkins-4sq.txt') # for test dataset
 dataset = load_dataset('./data/main/checkins-4sq.txt') # for main dataset

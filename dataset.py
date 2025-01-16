@@ -114,15 +114,33 @@ class PoiDataset(Dataset):
         for i in range(loc_count):
             self.Qs[i, 0] = i # Tensor of location IDs (used for alignment).
 
-        # align labels to locations (shift by one)
-        for i, loc in enumerate(locs):
-            self.locs[i] = loc[:-1] # Remove last location
-            self.labels.append(loc[1:]) # Adds the shifted locations (starting from index 1) as labels
-            # adapt time and coords:
-            self.lbl_times.append(self.times[i][1:])
-            self.lbl_coords.append(self.coords[i][1:])
-            self.times[i] = self.times[i][:-1]
-            self.coords[i] = self.coords[i][:-1]
+        # Open a file to write the output
+        with open("./100_users/UserCheckins.txt", "w") as f:    
+            # align labels to locations (shift by one)
+            for i, loc in enumerate(locs):
+                self.locs[i] = loc[:-1] # Remove last location
+                self.labels.append(loc[1:]) # Adds the shifted locations (starting from index 1) as labels
+                # adapt time and coords:
+                self.lbl_times.append(self.times[i][1:])
+                self.lbl_coords.append(self.coords[i][1:])
+                self.times[i] = self.times[i][:-1]
+                self.coords[i] = self.coords[i][:-1]
+
+                # Write the check-ins for each user to the file
+                f.write(f"User {i} check-ins:\n")
+                f.write(f"  Times: {self.times[i]}\n")
+                f.write(f"  Coords: {self.coords[i]}\n")
+                f.write(f"  Locs: {self.locs[i]}\n\n")
+
+                # Write the sorted check-ins for each user to the file
+                f.write(f"User {i} sorted check-ins:\n")
+                sorted_checkins = sorted(zip(self.times[i], self.coords[i], self.locs[i]))
+                f.write(f"  Sorted check-ins: {sorted_checkins}\n")
+                
+                # Extract and write locations from sorted check-ins as a list
+                sorted_locations = [loc for _, _, loc in sorted_checkins]
+                f.write(f"  Sorted Locations: {sorted_locations}\n\n\n")
+                
 
         # split to training / test phase:  #* this iterates over users i
         for i, (time, coord, loc, label, lbl_time, lbl_coord) in enumerate(zip(self.times, self.coords, self.locs, self.labels, self.lbl_times, self.lbl_coords)):
@@ -154,36 +172,46 @@ class PoiDataset(Dataset):
         self.max_seq_count = 0           #* maximum number of full--length-20--sequences found for a particular user
         self.min_seq_count = 10_000_000  #* minimum number of full--length-20--sequences found for a particular user
         self.capacity = 0                #* total number of full--length-20--sequences across all users
-        #* this iterates over users i
-        for i, (time, coord, loc, label, lbl_time, lbl_coord) in enumerate(zip(self.times, self.coords, self.locs, self.labels, self.lbl_times, self.lbl_coords)):
-            seq_count = len(loc) // sequence_length  #* this is floor; how many full sequence_lengths we have in loc. The following check asserts that loc has at least sequence_length==20 elements
-            assert seq_count > 0 , f"fix seq-length and min-checkins in order to have at least one test sequence in a 80/20 split!; len(loc)={len(loc)}, sequence_length={sequence_length}, len(loc)//sequence_length={len(loc) // sequence_length}; user ID after mapping={i}"  #* DEBUG SET A
-            # print(f"len(loc)={len(loc)}, seq_count={seq_count}")
-            seqs = []
-            seq_times = []
-            seq_coords = []
-            seq_lbls = []
-            seq_lbl_times = []
-            seq_lbl_coords = []
-            for j in range(seq_count):
-                start = j * sequence_length
-                end = (j+1) * sequence_length
-                seqs.append(loc[start:end])
-                seq_times.append(time[start:end])
-                seq_coords.append(coord[start:end])
-                seq_lbls.append(label[start:end])
-                seq_lbl_times.append(lbl_time[start:end])
-                seq_lbl_coords.append(lbl_coord[start:end])
-            self.sequences.append(seqs)
-            self.sequences_times.append(seq_times)
-            self.sequences_coords.append(seq_coords)
-            self.sequences_labels.append(seq_lbls)
-            self.sequences_lbl_times.append(seq_lbl_times)
-            self.sequences_lbl_coords.append(seq_lbl_coords)
-            self.sequences_count.append(seq_count)
-            self.capacity += seq_count
-            self.max_seq_count = max(self.max_seq_count, seq_count)
-            self.min_seq_count = min(self.min_seq_count, seq_count)
+
+        with open("./100_users/User-Sequences.txt", "w") as f: 
+             # this iterates over users i
+            for i, (time, coord, loc, label, lbl_time, lbl_coord) in enumerate(zip(self.times, self.coords, self.locs, self.labels, self.lbl_times, self.lbl_coords)):
+                seq_count = len(loc) // sequence_length  #* this is floor; how many full sequence_lengths we have in loc. The following check asserts that loc has at least sequence_length==20 elements
+                assert seq_count > 0 , f"fix seq-length and min-checkins in order to have at least one test sequence in a 80/20 split!; len(loc)={len(loc)}, sequence_length={sequence_length}, len(loc)//sequence_length={len(loc) // sequence_length}; user ID after mapping={i}"  #* DEBUG SET A
+                # print(f"len(loc)={len(loc)}, seq_count={seq_count}")
+                seqs = []
+                seq_times = []
+                seq_coords = []
+                seq_lbls = []
+                seq_lbl_times = []
+                seq_lbl_coords = []
+                for j in range(seq_count):
+                    start = j * sequence_length
+                    end = (j+1) * sequence_length
+                    seqs.append(loc[start:end])
+                    seq_times.append(time[start:end])
+                    seq_coords.append(coord[start:end])
+                    seq_lbls.append(label[start:end])
+                    seq_lbl_times.append(lbl_time[start:end])
+                    seq_lbl_coords.append(lbl_coord[start:end])
+                self.sequences.append(seqs)
+                self.sequences_times.append(seq_times)
+                self.sequences_coords.append(seq_coords)
+                self.sequences_labels.append(seq_lbls)
+                self.sequences_lbl_times.append(seq_lbl_times)
+                self.sequences_lbl_coords.append(seq_lbl_coords)
+                self.sequences_count.append(seq_count)
+                self.capacity += seq_count
+                self.max_seq_count = max(self.max_seq_count, seq_count)
+                self.min_seq_count = min(self.min_seq_count, seq_count)
+
+                # Write the sequences for each user to the file
+                f.write(f"User {i} sequences:\n")
+                for j, seq in enumerate(seqs):
+                    f.write(f"  Sequence {j}:\n")
+                    f.write(f"    Times: {seq_times[j]}\n")
+                    f.write(f"    Coords: {seq_coords[j]}\n")
+                    f.write(f"    Locs: {seq}\n\n")
 
     def sequences_by_user(self, idx):
         return self.sequences[idx]

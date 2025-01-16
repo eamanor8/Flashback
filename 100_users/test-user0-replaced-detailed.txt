@@ -1,0 +1,509 @@
+parse with foursquare default settings
+use device: cuda:0
+Loaded pre-trained model from saved_models/pretrained.pt
+=================== Test Set Evaluation ===================
+Memory usage: 23.7%
+User 0:
+  Total Predictions: 20.0
+  Acc@1: 0.20000000
+  Acc@5: 0.70000000
+  Acc@10: 0.75000000
+User 1:
+  Total Predictions: 580.0
+  Acc@1: 0.25862069
+  Acc@5: 0.61034483
+  Acc@10: 0.77758621
+User 2:
+  Total Predictions: 940.0
+  Acc@1: 0.24361702
+  Acc@5: 0.57872340
+  Acc@10: 0.75744681
+User 3:
+  Total Predictions: 320.0
+  Acc@1: 0.26875000
+  Acc@5: 0.56562500
+  Acc@10: 0.72187500
+User 4:
+  Total Predictions: 550.0
+  Acc@1: 0.26727273
+  Acc@5: 0.56363636
+  Acc@10: 0.75272727
+User 5:
+  Total Predictions: 380.0
+  Acc@1: 0.31315789
+  Acc@5: 0.60789474
+  Acc@10: 0.75263158
+User 6:
+  Total Predictions: 430.0
+  Acc@1: 0.25581395
+  Acc@5: 0.61395349
+  Acc@10: 0.76511628
+User 7:
+  Total Predictions: 330.0
+  Acc@1: 0.25757576
+  Acc@5: 0.57878788
+  Acc@10: 0.73636364
+User 8:
+  Total Predictions: 360.0
+  Acc@1: 0.27777778
+  Acc@5: 0.61388889
+  Acc@10: 0.73611111
+User 9:
+  Total Predictions: 400.0
+  Acc@1: 0.24000000
+  Acc@5: 0.58250000
+  Acc@10: 0.74750000
+User 10:
+  Total Predictions: 500.0
+  Acc@1: 0.28600000
+  Acc@5: 0.60000000
+  Acc@10: 0.73600000
+User 11:
+  Total Predictions: 390.0
+  Acc@1: 0.21538462
+  Acc@5: 0.58717949
+  Acc@10: 0.79743590
+User 12:
+  Total Predictions: 330.0
+  Acc@1: 0.23636364
+  Acc@5: 0.64242424
+  Acc@10: 0.81818182
+User 13:
+  Total Predictions: 350.0
+  Acc@1: 0.24000000
+  Acc@5: 0.58285714
+  Acc@10: 0.80000000
+User 14:
+  Total Predictions: 490.0
+  Acc@1: 0.27142857
+  Acc@5: 0.60000000
+  Acc@10: 0.81020408
+User 15:
+  Total Predictions: 320.0
+  Acc@1: 0.20625000
+  Acc@5: 0.60000000
+  Acc@10: 0.81875000
+User 16:
+  Total Predictions: 380.0
+  Acc@1: 0.21052632
+  Acc@5: 0.60263158
+  Acc@10: 0.80263158
+User 17:
+  Total Predictions: 360.0
+  Acc@1: 0.20277778
+  Acc@5: 0.57222222
+  Acc@10: 0.76388889
+User 18:
+  Total Predictions: 350.0
+  Acc@1: 0.24857143
+  Acc@5: 0.58285714
+  Acc@10: 0.80571429
+User 19:
+  Total Predictions: 410.0
+  Acc@1: 0.25365854
+  Acc@5: 0.61707317
+  Acc@10: 0.78292683
+User 20:
+  Total Predictions: 520.0
+  Acc@1: 0.22884615
+  Acc@5: 0.55384615
+  Acc@10: 0.70961538
+User 21:
+  Total Predictions: 400.0
+  Acc@1: 0.21750000
+  Acc@5: 0.58250000
+  Acc@10: 0.72250000
+User 22:
+  Total Predictions: 330.0
+  Acc@1: 0.22424242
+  Acc@5: 0.55757576
+  Acc@10: 0.72424242
+User 23:
+  Total Predictions: 390.0
+  Acc@1: 0.20769231
+  Acc@5: 0.51794872
+  Acc@10: 0.67179487
+User 24:
+  Total Predictions: 500.0
+  Acc@1: 0.19600000
+  Acc@5: 0.51200000
+  Acc@10: 0.68400000
+User 25:
+  Total Predictions: 340.0
+  Acc@1: 0.18235294
+  Acc@5: 0.50588235
+  Acc@10: 0.65588235
+User 26:
+  Total Predictions: 410.0
+  Acc@1: 0.19024390
+  Acc@5: 0.46585366
+  Acc@10: 0.63170732
+User 27:
+  Total Predictions: 440.0
+  Acc@1: 0.17045455
+  Acc@5: 0.46818182
+  Acc@10: 0.61363636
+User 28:
+  Total Predictions: 670.0
+  Acc@1: 0.13880597
+  Acc@5: 0.39701493
+  Acc@10: 0.53432836
+User 29:
+  Total Predictions: 380.0
+  Acc@1: 0.17105263
+  Acc@5: 0.44736842
+  Acc@10: 0.62894737
+User 30:
+  Total Predictions: 390.0
+  Acc@1: 0.14615385
+  Acc@5: 0.40256410
+  Acc@10: 0.56666667
+User 31:
+  Total Predictions: 410.0
+  Acc@1: 0.14146341
+  Acc@5: 0.39512195
+  Acc@10: 0.57317073
+User 32:
+  Total Predictions: 420.0
+  Acc@1: 0.13571429
+  Acc@5: 0.38095238
+  Acc@10: 0.53333333
+User 33:
+  Total Predictions: 540.0
+  Acc@1: 0.11481481
+  Acc@5: 0.37037037
+  Acc@10: 0.49814815
+User 34:
+  Total Predictions: 330.0
+  Acc@1: 0.16666667
+  Acc@5: 0.36666667
+  Acc@10: 0.52727273
+User 35:
+  Total Predictions: 630.0
+  Acc@1: 0.06507937
+  Acc@5: 0.23015873
+  Acc@10: 0.35714286
+User 36:
+  Total Predictions: 490.0
+  Acc@1: 0.09387755
+  Acc@5: 0.27346939
+  Acc@10: 0.37959184
+User 37:
+  Total Predictions: 340.0
+  Acc@1: 0.10000000
+  Acc@5: 0.27941176
+  Acc@10: 0.42058824
+User 38:
+  Total Predictions: 340.0
+  Acc@1: 0.06764706
+  Acc@5: 0.26764706
+  Acc@10: 0.39117647
+User 39:
+  Total Predictions: 460.0
+  Acc@1: 0.06086957
+  Acc@5: 0.24565217
+  Acc@10: 0.38260870
+User 40:
+  Total Predictions: 440.0
+  Acc@1: 0.07500000
+  Acc@5: 0.23409091
+  Acc@10: 0.37500000
+User 41:
+  Total Predictions: 510.0
+  Acc@1: 0.04901961
+  Acc@5: 0.23529412
+  Acc@10: 0.35098039
+User 42:
+  Total Predictions: 370.0
+  Acc@1: 0.04864865
+  Acc@5: 0.25945946
+  Acc@10: 0.38378378
+User 43:
+  Total Predictions: 970.0
+  Acc@1: 0.07113402
+  Acc@5: 0.24020619
+  Acc@10: 0.36082474
+User 44:
+  Total Predictions: 320.0
+  Acc@1: 0.09687500
+  Acc@5: 0.27500000
+  Acc@10: 0.40937500
+User 45:
+  Total Predictions: 420.0
+  Acc@1: 0.09285714
+  Acc@5: 0.23571429
+  Acc@10: 0.36428571
+User 46:
+  Total Predictions: 330.0
+  Acc@1: 0.11212121
+  Acc@5: 0.26363636
+  Acc@10: 0.40000000
+User 47:
+  Total Predictions: 340.0
+  Acc@1: 0.06764706
+  Acc@5: 0.28235294
+  Acc@10: 0.36764706
+User 48:
+  Total Predictions: 440.0
+  Acc@1: 0.07500000
+  Acc@5: 0.23863636
+  Acc@10: 0.42500000
+User 49:
+  Total Predictions: 580.0
+  Acc@1: 0.08965517
+  Acc@5: 0.27413793
+  Acc@10: 0.40862069
+User 50:
+  Total Predictions: 440.0
+  Acc@1: 0.06590909
+  Acc@5: 0.25454545
+  Acc@10: 0.36136364
+User 51:
+  Total Predictions: 560.0
+  Acc@1: 0.07500000
+  Acc@5: 0.23928571
+  Acc@10: 0.37857143
+User 52:
+  Total Predictions: 340.0
+  Acc@1: 0.07058824
+  Acc@5: 0.24705882
+  Acc@10: 0.41470588
+User 53:
+  Total Predictions: 500.0
+  Acc@1: 0.05800000
+  Acc@5: 0.27600000
+  Acc@10: 0.39600000
+User 54:
+  Total Predictions: 420.0
+  Acc@1: 0.08809524
+  Acc@5: 0.30476190
+  Acc@10: 0.43571429
+User 55:
+  Total Predictions: 570.0
+  Acc@1: 0.04385965
+  Acc@5: 0.22105263
+  Acc@10: 0.35263158
+User 56:
+  Total Predictions: 320.0
+  Acc@1: 0.08437500
+  Acc@5: 0.27812500
+  Acc@10: 0.37812500
+User 57:
+  Total Predictions: 440.0
+  Acc@1: 0.06136364
+  Acc@5: 0.27500000
+  Acc@10: 0.40681818
+User 58:
+  Total Predictions: 450.0
+  Acc@1: 0.06888889
+  Acc@5: 0.18888889
+  Acc@10: 0.37333333
+User 59:
+  Total Predictions: 620.0
+  Acc@1: 0.05967742
+  Acc@5: 0.20161290
+  Acc@10: 0.33225806
+User 60:
+  Total Predictions: 460.0
+  Acc@1: 0.05434783
+  Acc@5: 0.23913043
+  Acc@10: 0.36521739
+User 61:
+  Total Predictions: 360.0
+  Acc@1: 0.07222222
+  Acc@5: 0.24166667
+  Acc@10: 0.38055556
+User 62:
+  Total Predictions: 670.0
+  Acc@1: 0.06716418
+  Acc@5: 0.25970149
+  Acc@10: 0.41492537
+User 63:
+  Total Predictions: 380.0
+  Acc@1: 0.03947368
+  Acc@5: 0.18421053
+  Acc@10: 0.35789474
+User 64:
+  Total Predictions: 660.0
+  Acc@1: 0.05909091
+  Acc@5: 0.23939394
+  Acc@10: 0.39242424
+User 65:
+  Total Predictions: 430.0
+  Acc@1: 0.06976744
+  Acc@5: 0.19534884
+  Acc@10: 0.35116279
+User 66:
+  Total Predictions: 420.0
+  Acc@1: 0.04761905
+  Acc@5: 0.26190476
+  Acc@10: 0.38095238
+User 67:
+  Total Predictions: 530.0
+  Acc@1: 0.05849057
+  Acc@5: 0.25283019
+  Acc@10: 0.40377358
+User 68:
+  Total Predictions: 360.0
+  Acc@1: 0.04166667
+  Acc@5: 0.23055556
+  Acc@10: 0.35277778
+User 69:
+  Total Predictions: 670.0
+  Acc@1: 0.07761194
+  Acc@5: 0.26268657
+  Acc@10: 0.42089552
+User 70:
+  Total Predictions: 380.0
+  Acc@1: 0.06842105
+  Acc@5: 0.27368421
+  Acc@10: 0.39736842
+User 71:
+  Total Predictions: 330.0
+  Acc@1: 0.06666667
+  Acc@5: 0.26363636
+  Acc@10: 0.40000000
+User 72:
+  Total Predictions: 330.0
+  Acc@1: 0.04242424
+  Acc@5: 0.26363636
+  Acc@10: 0.40909091
+User 73:
+  Total Predictions: 380.0
+  Acc@1: 0.09473684
+  Acc@5: 0.27631579
+  Acc@10: 0.43684211
+User 74:
+  Total Predictions: 360.0
+  Acc@1: 0.08888889
+  Acc@5: 0.32500000
+  Acc@10: 0.48888889
+User 75:
+  Total Predictions: 410.0
+  Acc@1: 0.09512195
+  Acc@5: 0.32439024
+  Acc@10: 0.48048780
+User 76:
+  Total Predictions: 330.0
+  Acc@1: 0.07878788
+  Acc@5: 0.30606061
+  Acc@10: 0.48181818
+User 77:
+  Total Predictions: 830.0
+  Acc@1: 0.08192771
+  Acc@5: 0.29759036
+  Acc@10: 0.44578313
+User 78:
+  Total Predictions: 460.0
+  Acc@1: 0.09565217
+  Acc@5: 0.29130435
+  Acc@10: 0.50652174
+User 79:
+  Total Predictions: 390.0
+  Acc@1: 0.07435897
+  Acc@5: 0.27692308
+  Acc@10: 0.43589744
+User 80:
+  Total Predictions: 520.0
+  Acc@1: 0.08653846
+  Acc@5: 0.25961538
+  Acc@10: 0.43076923
+User 81:
+  Total Predictions: 510.0
+  Acc@1: 0.08431373
+  Acc@5: 0.25686275
+  Acc@10: 0.39215686
+User 82:
+  Total Predictions: 340.0
+  Acc@1: 0.09117647
+  Acc@5: 0.29411765
+  Acc@10: 0.43235294
+User 83:
+  Total Predictions: 540.0
+  Acc@1: 0.07222222
+  Acc@5: 0.26296296
+  Acc@10: 0.37037037
+User 84:
+  Total Predictions: 390.0
+  Acc@1: 0.09230769
+  Acc@5: 0.27692308
+  Acc@10: 0.38717949
+User 85:
+  Total Predictions: 370.0
+  Acc@1: 0.09189189
+  Acc@5: 0.28918919
+  Acc@10: 0.43243243
+User 86:
+  Total Predictions: 520.0
+  Acc@1: 0.07115385
+  Acc@5: 0.26346154
+  Acc@10: 0.40000000
+User 87:
+  Total Predictions: 600.0
+  Acc@1: 0.08833333
+  Acc@5: 0.29833333
+  Acc@10: 0.41333333
+User 88:
+  Total Predictions: 330.0
+  Acc@1: 0.08484848
+  Acc@5: 0.23939394
+  Acc@10: 0.35454545
+User 89:
+  Total Predictions: 410.0
+  Acc@1: 0.08048780
+  Acc@5: 0.24390244
+  Acc@10: 0.39024390
+User 90:
+  Total Predictions: 360.0
+  Acc@1: 0.10833333
+  Acc@5: 0.27500000
+  Acc@10: 0.41666667
+User 91:
+  Total Predictions: 360.0
+  Acc@1: 0.11944444
+  Acc@5: 0.26388889
+  Acc@10: 0.42500000
+User 92:
+  Total Predictions: 480.0
+  Acc@1: 0.12708333
+  Acc@5: 0.36458333
+  Acc@10: 0.51458333
+User 93:
+  Total Predictions: 470.0
+  Acc@1: 0.13617021
+  Acc@5: 0.40212766
+  Acc@10: 0.51489362
+User 94:
+  Total Predictions: 320.0
+  Acc@1: 0.17812500
+  Acc@5: 0.39062500
+  Acc@10: 0.54062500
+User 95:
+  Total Predictions: 350.0
+  Acc@1: 0.16000000
+  Acc@5: 0.41142857
+  Acc@10: 0.56285714
+User 96:
+  Total Predictions: 330.0
+  Acc@1: 0.18484848
+  Acc@5: 0.40303030
+  Acc@10: 0.58484848
+User 97:
+  Total Predictions: 300.0
+  Acc@1: 0.19333333
+  Acc@5: 0.46000000
+  Acc@10: 0.63000000
+User 98:
+  Total Predictions: 240.0
+  Acc@1: 0.22916667
+  Acc@5: 0.49166667
+  Acc@10: 0.61250000
+
+
+ =================================================================
+Elapsed Time: 68.99 seconds
+acc@1: 0.12797591
+acc@5: 0.36088467
+acc@10: 0.51014358
+MRR: 0.24452895
+Total Predictions: 43180.0
